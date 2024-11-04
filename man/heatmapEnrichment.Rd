@@ -11,8 +11,9 @@ heatmapEnrichment(
   gene.set.use = "all",
   cluster.rows = FALSE,
   cluster.columns = FALSE,
-  scale = FALSE,
   facet.by = NULL,
+  scale = FALSE,
+  summary.stat = "mean",
   palette = "inferno"
 )
 }
@@ -32,10 +33,13 @@ heatmap will be generated across all gene sets.}
 
 \item{cluster.columns}{Use Euclidean distance to order the column values.}
 
+\item{facet.by}{Variable to facet the plot into n distinct graphs.}
+
 \item{scale}{Visualize raw values \strong{FALSE} or Z-transform 
 enrichment values \strong{TRUE}.}
 
-\item{facet.by}{Variable to facet the plot into n distinct graphs.}
+\item{summary.stat}{Use \strong{'median'} or \strong{'mean'} values
+to display.}
 
 \item{palette}{Colors to use in visualization - input any 
 \link[grDevices]{hcl.pals}.}

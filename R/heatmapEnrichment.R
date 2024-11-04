@@ -16,6 +16,8 @@
 #' @param facet.by Variable to facet the plot into n distinct graphs.
 #' @param scale Visualize raw values \strong{FALSE} or Z-transform 
 #' enrichment values \strong{TRUE}.
+#' @param summary.stat Use \strong{'median'} or \strong{'mean'} values
+#' to display.
 #' @param palette Colors to use in visualization - input any 
 #' \link[grDevices]{hcl.pals}.
 #' 
@@ -45,8 +47,9 @@ heatmapEnrichment <- function(input.data,
                               gene.set.use = "all", 
                               cluster.rows = FALSE,
                               cluster.columns = FALSE,
+                              facet.by = NULL,
                               scale = FALSE, 
-                              facet.by = NULL, 
+                              summary.stat = "mean",
                               palette = "inferno") {
   
   options(dplyr.summarise.inform = FALSE)
@@ -61,6 +64,13 @@ heatmapEnrichment <- function(input.data,
   } else {
     gene.set <- gene.set.use
   }
+  
+  if(summary.stat %!in% c("median", "mean")) {
+    message("Please select 'median' or 'mean' for the summary.stat argument. Using mean as a default")
+    summary_func <- mean
+  }
+  # Select the appropriate summary function
+  summary_func <- if (summary.stat == "median") median else mean
   
   if(!is.null(facet.by)) {
     enriched.summary <- enriched %>%
