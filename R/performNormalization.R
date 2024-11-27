@@ -39,17 +39,13 @@
 #' @export
 #' @return Single-cell object or matrix of normalized enrichment scores
 
-
-
-
-
 performNormalization <- function(sc.data,
-                                        enrichment.data = NULL,
-                                        assay = "escape",
-                                        gene.sets = NULL,
-                                        make.positive = FALSE,
-                                        scale.factor = NULL,
-                                        groups = NULL) {
+                                 enrichment.data = NULL,
+                                 assay = "escape",
+                                 gene.sets = NULL,
+                                 make.positive = FALSE,
+                                 scale.factor = NULL,
+                                 groups = NULL) {
   if(!is.null(assay)) {
     if(is_seurat_object(sc.data)) {
       assay.present <- assay %in% Assays(sc.data)
@@ -79,8 +75,7 @@ performNormalization <- function(sc.data,
   #Isolating the number of genes per cell expressed
   if(is.null(groups)){
     chunks <- dim(enriched)[[1]]
-  }
-  else{
+  } else{
     chunks <- min(groups, dim(enriched)[[1]])
   }
   
@@ -94,8 +89,7 @@ performNormalization <- function(sc.data,
     })
     egc.sizes <- split_rows(do.call(cbind,egc.sizes), chunk.size=chunks)
     rm(cnts)
-  }
-  else{
+  } else{
     egc.sizes <- split_vector(scale.factor, chunk.size=chunks)
   }
   enriched <- split_rows(enriched, chunk.size=chunks)

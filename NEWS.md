@@ -1,3 +1,9 @@
+# escape VERSION 2.2.2
+
+## UNDERLYING CHANGES
+
+* fix ```performNormalization()``` conditional statements
+
 # escape VERSION 2.2.1
 
 #VERSION BUMP FOR BIOCONDUCTOR

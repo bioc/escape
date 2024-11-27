@@ -198,9 +198,10 @@ is_seurat_or_se_object <- function(obj) {
 
 #' @importFrom SummarizedExperiment assay
 #' @importFrom SingleCellExperiment altExp
+#' @importFrom Matrix t
 .pull.Enrich <- function(sc, enrichment.name) {
   if (inherits(sc, "Seurat")) {
-    values <- t(sc[[enrichment.name]]["data"])
+    values <- Matrix::t(sc[[enrichment.name]]["data"])
   } else if (inherits(sc, "SingleCellExperiment")) {
     if(length(assays(altExp(sc))) == 1) {
       values <- t(assay(altExps(sc)[[enrichment.name]]))
