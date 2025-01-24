@@ -5,7 +5,7 @@ test_that("densityEnrichment works", {
   seuratObj <- getdata("runEscape", "pbmc_small_ssGSEA")
   GS <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
              Tcells = c("CD3E", "CD3D", "CD3G", "CD7","CD8A"))
-  
+  set.seed(42)
   expect_doppelganger(
     "denistyEnrichment_default_plot",
     densityEnrichment(
@@ -14,6 +14,7 @@ test_that("densityEnrichment works", {
       gene.sets = GS)
   )
   
+  set.seed(42)
   expect_doppelganger(
     "denistyEnrichment_group.by_plot",
     densityEnrichment(

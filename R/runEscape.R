@@ -70,39 +70,42 @@ escape.matrix <- function(input.data,
                 length(splits), 'times.'))
     split.data <- .split_data.matrix(matrix=cnts, chunk.size=groups)
     
+    all_gene_sets <- names(egc) # Collect all gene set names
     
     for (i in seq_along(splits)) {
-          last <- min(ncol(cnts), i+groups-1)
-          if(method == "GSVA") {
-              parameters <- .gsva.setup(split.data[[i]], egc)
-          } else if (method == "ssGSEA") {
-              parameters <- .ssGSEA.setup(split.data[[i]], egc)
-          }
-          if(method %in% c("ssGSEA", "GSVA")) {
-              a <- suppressWarnings(gsva(param = parameters, 
-                        verbose = FALSE,
-                        BPPARAM = BPPARAM,
-                        ...))
-          } else if(method == "UCell") {
-              a <- t(suppressWarnings(
-                ScoreSignatures_UCell(matrix = split.data[[i]], 
-                                      features=egc,
-                                      name = NULL,
-                                      BPPARAM = BPPARAM,
-                                      ...)))
-          } else if (method == "AUCell") {
-            rankings <- AUCell_buildRankings(split.data[[i]],
-                                             plotStats = FALSE,
-                                             verbose = FALSE)
-            a <- assay(AUCell_calcAUC(geneSets = egc,
-                                     rankings,
-                                     normAUC = TRUE,
-                                     aucMaxRank = ceiling(0.2 * nrow(split.data[[i]])),
-                                     verbose = FALSE,
-                                     ...))
-             
-          }
-          scores[[i]] <- a
+      if (method == "GSVA") {
+        parameters <- .gsva.setup(split.data[[i]], egc)
+      } else if (method == "ssGSEA") {
+        parameters <- .ssGSEA.setup(split.data[[i]], egc)
+      }
+      if (method %in% c("ssGSEA", "GSVA")) {
+        a <- suppressWarnings(gsva(param = parameters, 
+                                   verbose = FALSE,
+                                   BPPARAM = BPPARAM,
+                                   ...))
+      } else if (method == "UCell") {
+        a <- t(suppressWarnings(
+          ScoreSignatures_UCell(matrix = split.data[[i]], 
+                                features = egc,
+                                name = NULL,
+                                BPPARAM = BPPARAM,
+                                ...)))
+      } else if (method == "AUCell") {
+        rankings <- AUCell_buildRankings(split.data[[i]],
+                                         plotStats = FALSE,
+                                         verbose = FALSE)
+        a <- assay(AUCell_calcAUC(geneSets = egc,
+                                  rankings,
+                                  normAUC = TRUE,
+                                  aucMaxRank = ceiling(0.2 * nrow(split.data[[i]])),
+                                  verbose = FALSE,
+                                  ...))
+      }
+      
+      # Ensure consistent row names (all_gene_sets) across splits
+      a <- as.data.frame(a)
+      a <- a[match(all_gene_sets, rownames(a), nomatch = NA), , drop = FALSE]
+      scores[[i]] <- a
     }
     scores <- do.call(cbind, scores)
     output <- t(as.matrix(scores))

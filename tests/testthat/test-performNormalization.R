@@ -27,9 +27,9 @@ test_that("performNormalization works", {
                                       gene.sets = GS.hallmark,
                                       make.positive = FALSE, groups=20)
   
-  expect_equal(seuratObj.n@assays$escape.ssGSEA, 
+  expect_equal(seuratObj.n@assays$escape.ssGSEA_normalized, 
                getdata("performNormalization", "performNormalization_nonpositive"))
-  expect_equal(seuratObj.n@assays$escape.ssGSEA, 
-               seuratObj.ng@assays$escape.ssGSEA)
+  expect_equal(seuratObj.n@assays$escape.ssGSEA_normalized, 
+               seuratObj.ng@assays$escape.ssGSEA_normalized)
   
 })

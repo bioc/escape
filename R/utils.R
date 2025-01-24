@@ -133,22 +133,16 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #split data matrix into cell chunks
-#stole this from https://github.com/carmonalab/UCell
-.split_data.matrix <- function(matrix, chunk.size=1000) {
+#modified this from https://github.com/carmonalab/UCell
+.split_data.matrix <- function(matrix, chunk.size = 1000) {
   ncols <- dim(matrix)[2]
-  nchunks <- (ncols-1) %/% chunk.size + 1
+  nchunks <- ceiling(ncols / chunk.size)  # Total number of chunks
   
-  split.data <- list()
-  min <- 1
+  split.data <- vector("list", nchunks)  # Preallocate list for efficiency
   for (i in seq_len(nchunks)) {
-    if (i == nchunks-1) {  #make last two chunks of equal size
-      left <- ncols-(i-1)*chunk.size
-      max <- min+round(left/2)-1
-    } else {
-      max <- min(i*chunk.size, ncols)
-    }
-    split.data[[i]] <- matrix[,min:max]
-    min <- max+1    #for next chunk
+    min <- (i - 1) * chunk.size + 1
+    max <- min(i * chunk.size, ncols)
+    split.data[[i]] <- matrix[, min:max, drop = FALSE]  # Ensure consistent structure
   }
   return(split.data)
 }

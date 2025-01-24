@@ -2,7 +2,9 @@
 #' 
 #' This function allows users to normalize the enrichment calculations 
 #' by accounting for single-cell dropout and producing positive 
-#' values for downstream differential enrichment analyses. A positive range
+#' values for downstream differential enrichment analyses. Default calculation 
+#' uses will scale the enrichment values by the number of genes present from 
+#' the gene set and then use a natural log transformation. A positive range
 #' values is useful for several downstream analyses, like differential 
 #' evaluation for log2-fold change, but will alter the original 
 #' enrichment values.
@@ -106,6 +108,13 @@ performNormalization <- function(sc.data,
       x+max(0, -min(x))
     })
   }
+  #Default Scaling using natural log
+  if(is.null(scale.factor)) {
+    enriched <- suppressWarnings(ifelse(enriched >= 0, 
+                                 log1p(enriched + 1e-6), 
+                                 -log1p(abs(enriched) + 1e-6)))
+  }
+  
   if(is_seurat_or_se_object(sc.data)) {
     if(is.null(assay)) {
       assay <- "escape"

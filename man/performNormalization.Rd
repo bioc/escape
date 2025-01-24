@@ -40,7 +40,9 @@ Single-cell object or matrix of normalized enrichment scores
 \description{
 This function allows users to normalize the enrichment calculations 
 by accounting for single-cell dropout and producing positive 
-values for downstream differential enrichment analyses. A positive range
+values for downstream differential enrichment analyses. Default calculation 
+uses will scale the enrichment values by the number of genes present from 
+the gene set and then use a natural log transformation. A positive range
 values is useful for several downstream analyses, like differential 
 evaluation for log2-fold change, but will alter the original 
 enrichment values.

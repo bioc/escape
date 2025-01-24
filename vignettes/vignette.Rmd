@@ -162,6 +162,7 @@ ggplot(data = as.data.frame(enrichment.scores),
   theme_classic() + 
   theme(axis.title = element_blank())
 ```
+
 Multi-core support is for all methods is available through [BiocParallel](https://bioconductor.org/packages/release/bioc/html/BiocParallel.html). To add more cores, use the argument **BPPARAM** to ```escape.matrix()```. Here we will use the ```SnowParam()``` for it's support across platforms and explicitly call 2 workers (or cores).
 
 ```{r tidy=FALSE, eval=FALSE}
@@ -175,7 +176,6 @@ enrichment.scores <- escape.matrix(pbmc_small,
 ## runEscape
 
 Alternatively, we can use ```runEscape()``` to calculate the enrichment score and directly attach the output to a single-cell object. The additional parameter for ```runEscape` is **new.assay.name**, in order to save the enrichment scores as a custom assay in the single-cell object. 
-
 
 ```{r tidy = FALSE}
 pbmc_small <- runEscape(pbmc_small, 
@@ -208,8 +208,6 @@ FeaturePlot(pbmc_small, "HALLMARK-APOPTOSIS") +
 Although we glossed over the normalization that can be used in ```escape.matrix()``` and ```runEscape()```, it is worth mentioning here as normalization can affect all downstream analyses. 
 
 There can be inherent bias in enrichment values due to drop out in single-cell expression data. Cells with larger numbers of features and counts will likely have higher enrichment values. ```performNormalization()``` will normalize the enrichment values by calculating the number of genes expressed in each gene set and cell. This is similar to the normalization in classic GSEA and it will be stored in a new assay. 
-
-
 
 ```{r}
 pbmc_small <- performNormalization(sc.data = pbmc_small, 
@@ -374,6 +372,7 @@ densityEnrichment(pbmc_small,
                   gene.set.use = "HALLMARK-IL6-JAK-STAT3-SIGNALING", 
                   gene.sets = GS.hallmark)
 ```
+
 ## scatterEnrichment
 
 It may be advantageous to look at the distribution of multiple gene sets - here we can use ```scatterEnrichment()``` for a 2 gene set comparison. The color values are based on the density of points determined by the number of neighbors, similar to the [Nebulosa R package](https://www.bioconductor.org/packages/release/bioc/html/Nebulosa.html). We just need to define which gene set to plot on the **x.axis** and which to plot on the **y.axis**.

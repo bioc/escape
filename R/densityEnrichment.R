@@ -48,7 +48,7 @@ densityEnrichment <- function(input.data,
     group.by <- "ident"
   }
   
-  compute.gene.density<-utils::getFromNamespace("compute.gene.cdf", "GSVA")
+  compute.gene.cdf<-utils::getFromNamespace("compute.gene.cdf", "GSVA")
   
   gene.sets <- .GS.check(gene.sets)
   gene.set <- gene.sets[[gene.set.use]]
@@ -62,7 +62,7 @@ densityEnrichment <- function(input.data,
   
   lapply(seq_len(length(groups)), function(x) {
     tmp <- cnts.filter[,which(grouping == groups[x])]
-    density <-  suppressWarnings(compute.gene.density(tmp, seq_len(ncol(tmp)), TRUE, FALSE))
+    density <-  suppressWarnings(compute.gene.cdf(tmp, seq_len(ncol(tmp)), TRUE, FALSE))
     rank.scores <- rep(0, nrow(tmp))
     sort.sgn.idxs <- apply(density, 2, order, decreasing=TRUE)
     gsva_rnk2 <- apply(sort.sgn.idxs, 2, compute_rank_score.mod, nrow(cnts))
