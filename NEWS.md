@@ -1,3 +1,12 @@
+
+# 2.6.1
+
+Update to 2.6.0 to match Bioconductor Release 3.22 on 2025/10/30
+
+## BUG FIXES
+* Fixed issue `densityEnrichment()` interaction with GSVA package through the function `compute.gene.cdf`
+
+
 # 2.5.5  (2025-06-11)
 
 ## Bug fix & enhanced functionality

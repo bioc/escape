@@ -67,7 +67,7 @@ densityEnrichment <- function(input.data,
     tmp  <- cnts[, cols, drop = FALSE]
     
     dens <- suppressWarnings(
-      compute.cdf(tmp, seq_len(ncol(tmp)), TRUE, FALSE)
+      compute.cdf(tmp, seq_len(ncol(tmp)), FALSE, FALSE)
     )
     ord  <- apply(dens, 2, order, decreasing = TRUE)          # genes × cells
     scores <- vapply(seq_len(ncol(ord)),
