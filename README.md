@@ -2,10 +2,12 @@
 #### Easy single cell analysis platform for enrichment
 
 <!-- badges: start -->
- [![BioC status](http://www.bioconductor.org/shields/build/release/bioc/escape.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/escape)
 [![R-CMD-check](https://github.com/ncborcherding/escape/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ncborcherding/escape/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/BorchLab/escape/branch/master/graph/badge.svg)](https://app.codecov.io/gh/BorchLab/escape?branch=master)
 [![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://ncborcherding.github.io/vignettes/escape_vignette.html)
+[![Bioc Release Build](http://www.bioconductor.org/shields/build/release/bioc/escape.svg)](http://www.bioconductor.org/checkResults/release/bioc-LATEST/escape)
+[![Bioc Devel Build](http://www.bioconductor.org/shields/build/devel/bioc/escape.svg)](http://www.bioconductor.org/checkResults/devel/bioc-LATEST/escape)
+[![Bioc Downloads](http://www.bioconductor.org/shields/downloads/release/escape.svg)](http://bioconductor.org/packages/stats/bioc/escape/)
 <!-- badges: end -->
 
 <img align="right" src="https://github.com/BorchLab/escape/blob/master/www/escape_hex.png" width="352" height="352">
