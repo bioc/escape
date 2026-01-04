@@ -1,60 +1,63 @@
 #' Calculate Single-Cell Gene-Set Enrichment Scores
 #'
-#' `escape.matrix()` computes per-cell enrichment for arbitrary gene-set
+#' \code{escape.matrix()} computes per-cell enrichment for arbitrary gene-set
 #' collections using one of four scoring back-ends and returns a dense numeric
-#' matrix (cells × gene-sets).  The expression matrix is processed in
-#' user-defined *chunks* (`groups`) so that memory use remains predictable;
-#' each chunk is dispatched in parallel via a \pkg{BiocParallel} `BPPARAM`
-#' backend.  Heavy engines (\pkg{GSVA}, \pkg{UCell}, \pkg{AUCell}) are loaded
-#' lazily, keeping them in the package’s \strong{Suggests} field.
+#' matrix (cells x gene-sets). The expression matrix is processed in
+#' user-defined chunks (\code{groups}) so that memory use remains predictable;
+#' each chunk is dispatched in parallel via a \pkg{BiocParallel} \code{BPPARAM}
+#' backend. Heavy engines (\pkg{GSVA}, \pkg{UCell}, \pkg{AUCell}) are loaded
+#' lazily, keeping them in the package's \strong{Suggests} field.
 #'
 #' @section Supported methods:
 #' \describe{
-#'   \item{`"GSVA"`}{Gene-set variation analysis (Poisson kernel).}
-#'   \item{`"ssGSEA"`}{Single-sample GSEA.}
-#'   \item{`"UCell"`}{Rank-based UCell scoring.}
-#'   \item{`"AUCell"`}{Area-under-the-curve ranking score.}
+#'   \item{\code{"GSVA"}}{Gene-set variation analysis (Poisson kernel).}
+#'   \item{\code{"ssGSEA"}}{Single-sample GSEA.}
+#'   \item{\code{"UCell"}}{Rank-based UCell scoring.}
+#'   \item{\code{"AUCell"}}{Area-under-the-curve ranking score.}
 #' }
 #'
-#' @param input.data A raw‐counts matrix (`genes × cells`), a
-#' \link[SeuratObject]{Seurat} object, or a
-#' \link[SingleCellExperiment]{SingleCellExperiment}. Gene identifiers must
-#' match those in `gene.sets`.
+#' @param input.data A raw-counts matrix (genes x cells), a
+#'   \link[SeuratObject]{Seurat} object, or a
+#'   \link[SingleCellExperiment]{SingleCellExperiment}. Gene identifiers must
+#'   match those in \code{gene.sets}.
 #' @param gene.sets A named list of character vectors, the result of
-#' [getGeneSets()], or the built-in data object [escape.gene.sets]. 
-#' List names become column names in the result.
-#' @param method Scoring algorithm (case-insensitive). One of `"GSVA"`, 
-#' `"ssGSEA"`, `"UCell"`, or `"AUCell"`. Default **`"ssGSEA"`**.
-#' @param groups Integer >= 1. Number of cells per processing chunk.
-#'   Larger values reduce overhead but increase memory usage.  Default **1000**.
-#' @param min.size Minimum number of genes from a set that must be detected
-#' in the expression matrix for that set to be scored.  Default **5**.
-#' Use `NULL` to disable filtering.
-#' @param normalize  Logical. If `TRUE`, the score matrix is passed to
-#' [performNormalization()] (drop-out scaling and optional log transform).
-#' Default **FALSE**.
-#' @param make.positive Logical. If `TRUE` *and* `normalize = TRUE`, shifts
-#' every gene-set column so its global minimum is zero, facilitating
-#' downstream log-ratio analyses.  Default **FALSE**.
-#' @param min.expr.cells Numeric. Gene-expression filter threshold (see
-#' details above). Default **0** (no gene filtering).
-#' @param min.filter.by Character or `NULL`.  Column name in `meta.data`
-#' (Seurat) or `colData` (SCE) defining groups within which the
-#' `min.expr.cells` rule is applied.  Default **`NULL`**.
+#'   \code{\link{getGeneSets}}, or the built-in data object
+#'   \code{\link{escape.gene.sets}}. List names become column names in the
+#'   result.
+#' @param method Character. Scoring algorithm (case-insensitive). One of
+#'   \code{"GSVA"}, \code{"ssGSEA"}, \code{"UCell"}, or \code{"AUCell"}.
+#'   Default is \code{"ssGSEA"}.
+#' @param groups Integer. Number of cells per processing chunk. Larger values
+#'   reduce overhead but increase memory usage. Default is \code{1000}.
+#' @param min.size Integer or \code{NULL}. Minimum number of genes from a set
+#'   that must be detected in the expression matrix for that set to be scored.
+#'   Default is \code{5}. Use \code{NULL} to disable filtering.
+#' @param normalize Logical. If \code{TRUE}, the score matrix is passed to
+#'   \code{\link{performNormalization}} (drop-out scaling and optional log
+#'   transform). Default is \code{FALSE}.
+#' @param make.positive Logical. If \code{TRUE} \emph{and}
+#'   \code{normalize = TRUE}, shifts every gene-set column so its global
+#'   minimum is zero, facilitating downstream log-ratio analyses. Default is
+#'   \code{FALSE}.
+#' @param min.expr.cells Numeric. Gene-expression filter threshold. Default is
+#'   \code{0} (no gene filtering).
+#' @param min.filter.by Character or \code{NULL}. Column name in
+#'   \code{meta.data} (Seurat) or \code{colData} (SCE) defining groups within
+#'   which the \code{min.expr.cells} rule is applied. Default is \code{NULL}.
 #' @param BPPARAM A \pkg{BiocParallel} parameter object describing the
-#' parallel backend. 
-#' @param ... Extra arguments passed verbatim to the chosen back-end
-#' scoring function (`gsva()`, `ScoreSignatures_UCell()`, or
-#' `AUCell_calcAUC()`).
+#'   parallel backend. Default is \code{NULL} (serial execution).
+#' @param ... Extra arguments passed verbatim to the chosen back-end scoring
+#'   function (\code{gsva()}, \code{ScoreSignatures_UCell()}, or
+#'   \code{AUCell_calcAUC()}).
 #'
 #' @return A numeric matrix with one row per cell and one column per gene set,
-#' ordered as in `gene.sets`.
+#'   ordered as in \code{gene.sets}.
 #'
 #' @author Nick Borcherding, Jared Andrews
 #'
-#' @seealso [runEscape()] to attach scores to a single-cell object;
-#' [getGeneSets()] for MSigDB retrieval; [performNormalization()] for the
-#' optional normalization workflow.
+#' @seealso \code{\link{runEscape}} to attach scores to a single-cell object;
+#'   \code{\link{getGeneSets}} for MSigDB retrieval;
+#'   \code{\link{performNormalization}} for the optional normalization workflow.
 #'
 #' @examples
 #' gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
@@ -149,25 +152,26 @@ escape.matrix <- function(input.data,
 
 #' Calculate Enrichment Scores Using Seurat or SingleCellExperiment Objects
 #'
-#' `runEscape()` is a convenience wrapper around [escape.matrix()] that
-#' computes enrichment scores and inserts them as a new assay (default
-#' `"escape"`) in a \pkg{Seurat} or \pkg{SingleCellExperiment} object.  All
-#' arguments (except `new.assay.name`) map directly to their counterparts in
-#' `escape.matrix()`.
+#' \code{runEscape()} is a convenience wrapper around \code{\link{escape.matrix}}
+#' that computes enrichment scores and inserts them as a new assay (default
+#' \code{"escape"}) in a \pkg{Seurat} or \pkg{SingleCellExperiment} object. All
+#' arguments (except \code{new.assay.name}) map directly to their counterparts
+#' in \code{escape.matrix()}.
 #'
 #' @inheritParams escape.matrix
 #' @param new.assay.name Character. Name for the assay that will store the
-#' enrichment matrix in the returned object. Default **"escape"**.
+#'   enrichment matrix in the returned object. Default is \code{"escape"}.
 #'
 #' @return The input single-cell object with an additional assay containing the
-#' enrichment scores (`cells × gene-sets`). Matrix orientation follows
-#' standard single-cell conventions (gene-sets as rows inside the assay).
+#'   enrichment scores (cells x gene-sets). Matrix orientation follows standard
+#'   single-cell conventions (gene-sets as rows inside the assay).
 #'
 #' @author Nick Borcherding, Jared Andrews
 #'
-#' @seealso [escape.matrix()] for the underlying computation,
-#' [performNormalization()] to add normalized scores, [heatmapEnrichment()], 
-#' [ridgeEnrichment()] and related plotting helpers for visualization.
+#' @seealso \code{\link{escape.matrix}} for the underlying computation;
+#'   \code{\link{performNormalization}} to add normalized scores;
+#'   \code{\link{heatmapEnrichment}}, \code{\link{ridgeEnrichment}}, and
+#'   related plotting helpers for visualization.
 #'
 #' @examples
 #' gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),

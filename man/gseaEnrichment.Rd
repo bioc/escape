@@ -22,51 +22,58 @@ gseaEnrichment(
 \item{input.data}{A \link[SeuratObject]{Seurat} object or a
 \link[SingleCellExperiment]{SingleCellExperiment}.}
 
-\item{gene.set.use}{Character(1). Name of the gene set to display.}
+\item{gene.set.use}{Character. Name of the gene set to display.}
 
 \item{gene.sets}{A named list of character vectors, the result of
-[getGeneSets()], or the built-in data object [escape.gene.sets].}
+\code{\link{getGeneSets}}, or the built-in data object
+\code{\link{escape.gene.sets}}.}
 
-\item{group.by}{Metadata column. Defaults to the Seurat/SCE `ident` 
-slot when `NULL`.}
+\item{group.by}{Character. Metadata column used for grouping. Defaults to
+the Seurat/SCE \code{ident} slot when \code{NULL}.}
 
-\item{summary.fun}{Method used to collapse expression within each
-group **before** ranking: one of `"mean"` (default), `"median"`, `"max"`,
-`"sum"`, or `"geometric"`.}
+\item{summary.fun}{Character. Method used to collapse expression within
+each group \strong{before} ranking. One of: \code{"mean"} (default),
+\code{"median"}, \code{"max"}, \code{"sum"}, or \code{"geometric"}.}
 
-\item{p}{Weighting exponent in the KS statistic (classical GSEA uses `p = 1`).}
+\item{p}{Numeric. Weighting exponent in the KS statistic. Classical GSEA
+uses \code{p = 1}. Default is \code{1}.}
 
-\item{nperm}{Integer >= 0. Gene-label permutations per group (default 1000). 
-`0` value will skip NES/*p* calculation.}
+\item{nperm}{Integer. Number of gene-label permutations per group.
+Default is \code{1000}. Set to \code{0} to skip NES/p-value calculation.}
 
-\item{rug.height}{Vertical spacing of the hit rug as a fraction of the
-y-axis (default `0.02`).}
+\item{rug.height}{Numeric. Vertical spacing of the hit rug as a fraction
+of the y-axis. Default is \code{0.02}.}
 
-\item{digits}{Number of decimal places displayed for ES in the
-legend (default `2`).}
+\item{digits}{Integer. Number of decimal places displayed for ES in the
+legend. Default is \code{2}.}
 
 \item{BPPARAM}{A \pkg{BiocParallel} parameter object describing the
-parallel backend.}
+parallel backend. Default is \code{NULL} (serial execution).}
 
-\item{palette}{Character. Any palette from \code{\link[grDevices]{hcl.pals}}.}
+\item{palette}{Character. Color palette name from
+\code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.}
 }
 \value{
 A single `patchwork`/`ggplot2` object
 }
 \description{
-Produces the familiar two-panel GSEA graphic—running enrichment score
-(RES) plus a “hit” rug—for a **single gene-set** evaluated across
-multiple biological groups (clusters, conditions, samples, ...).
+Produces the familiar two-panel GSEA graphic: running enrichment score (RES)
+plus a "hit" rug for a \strong{single gene-set} evaluated across multiple
+biological groups (clusters, conditions, samples, etc.).
 }
-\details{
-**Algorithm (Subramanian _et al._, PNAS 2005)**  
-1. Within every group, library-size-normalise counts to CPM.  
-2. Collapse gene expression with `summary.fun` (mean/median/…).  
-3. Rank genes (descending) to obtain one ordered list per group.  
-4. Compute the weighted Kolmogorov–Smirnov running score  
-   (weight = \|stat\|^*p*).  
-5. ES = maximum signed deviation of the curve.
+\section{Algorithm}{
+
+Based on Subramanian \emph{et al.}, PNAS 2005:
+\enumerate{
+  \item Within every group, library-size-normalize counts to CPM.
+  \item Collapse gene expression with \code{summary.fun} (mean/median/etc.).
+  \item Rank genes (descending) to obtain one ordered list per group.
+  \item Compute the weighted Kolmogorov-Smirnov running score
+    (weight = |stat|^p).
+  \item ES = maximum signed deviation of the curve.
 }
+}
+
 \examples{
 pbmc_small <- SeuratObject::pbmc_small
 

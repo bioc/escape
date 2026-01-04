@@ -17,27 +17,28 @@ densityEnrichment(
 \item{input.data}{A \link[SeuratObject]{Seurat} object or a
 \link[SingleCellExperiment]{SingleCellExperiment}.}
 
-\item{gene.set.use}{Character(1).  Name of the gene set to display.}
+\item{gene.set.use}{Character. Name of the gene set to display.}
 
 \item{gene.sets}{A named list of character vectors, the result of
-[getGeneSets()], or the built-in data object [escape.gene.sets].}
+\code{\link{getGeneSets}}, or the built-in data object
+\code{\link{escape.gene.sets}}.}
 
-\item{group.by}{Metadata column. Defaults to the Seurat/SCE `ident` 
-slot when `NULL`.}
+\item{group.by}{Character. Metadata column used for grouping. Defaults to
+the Seurat/SCE \code{ident} slot when \code{NULL}.}
 
-\item{rug.height}{Vertical spacing of the hit rug as a fraction of the
-y-axis (default `0.02`).}
+\item{rug.height}{Numeric. Vertical spacing of the hit rug as a fraction of
+the y-axis. Default is \code{0.02}.}
 
-\item{palette}{Character. Any palette from \code{\link[grDevices]{hcl.pals}}.}
+\item{palette}{Character. Color palette name from
+\code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.}
 }
 \value{
 A `patchwork`/`ggplot2` object.
 }
 \description{
-This function allows to the user to examine the mean ranking
-within the groups across the gene set. The visualization uses
-the density function to display the relative position and distribution
-of rank.
+This function allows the user to examine the mean ranking within groups
+across the gene set. The visualization uses the density function to display
+the relative position and distribution of rank.
 }
 \examples{
 gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),

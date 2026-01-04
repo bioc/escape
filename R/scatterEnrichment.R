@@ -1,29 +1,45 @@
 #' Plot 2D Enrichment Distributions With Density or Hexplots
 #'
-#' Visualize the relationship between *two* enrichment scores at single-cell
-#' resolution. By default points are shaded by local 2-D density
-#' (`color.by = "density"`), but users can instead color by a metadata column
-#' (discrete) or by the raw gene-set scores themselves (continuous).
+#' Visualize the relationship between two enrichment scores at single-cell
+#' resolution. By default, points are shaded by local 2-D density
+#' (\code{color.by = "density"}), but users can instead color by a metadata
+#' column (discrete) or by the raw gene-set scores themselves (continuous).
 #'
-#' @param input.data Output of \code{\link{escape.matrix}} or a single‑cell
-#' object previously processed by \code{\link{runEscape}}.
-#' @param assay Name of the assay holding enrichment scores when
-#' `input.data` is a single‑cell object. Ignored otherwise.
-#' @param x.axis,y.axis Gene-set names to plot on the *x* and *y* axes.
-#' @param facet.by Optional metadata column used to facet the plot.
-#' @param group.by Metadata column plotted.  Defaults to the
-#' Seurat/SCE `ident` slot when `NULL`.
-#' @param color.by Aesthetic mapped to point color. Use 
-#' `"density"` (default), `"group"`, `"x"`, or `"y"`.  The latter two apply a 
-#' continuous gradient to the corresponding axis.
-#' @param style `"point"` (density-aware points) or `"hex"` (hex-bin).
-#' @param scale Logical; if `TRUE` scores are centered/scaled (Z‑score) prior
-#' to plotting.
-#' @param bins Number of hex bins along each axis when `style = "hex"`.
-#' @param point.size,alpha  Aesthetic tweaks for `style = "point"`.
-#' @param add.corr Logical. Add Pearson and Spearman correlation
-#' coefficients (top-left corner of the first facet).
-#' @param palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
+#' @param input.data Output of \code{\link{escape.matrix}} or a single-cell
+#'   object previously processed by \code{\link{runEscape}}.
+#' @param assay Character. Name of the assay holding enrichment scores when
+#'   \code{input.data} is a single-cell object. Ignored otherwise.
+#' @param x.axis Character. Gene-set name to plot on the x-axis.
+#' @param y.axis Character. Gene-set name to plot on the y-axis.
+#' @param facet.by Character or \code{NULL}. Metadata column used to facet
+#'   the plot.
+#' @param group.by Character. Metadata column used when \code{color.by = "group"}.
+#'   Defaults to the Seurat/SCE \code{ident} slot when \code{NULL}.
+#' @param color.by Character. Aesthetic mapped to point color. Options:
+#'   \itemize{
+#'     \item \code{"density"} (default): Shade points by local 2-D density.
+#'     \item \code{"group"}: Color by the \code{group.by} metadata column.
+#'     \item \code{"x"}: Apply a continuous gradient based on the x-axis values.
+#'     \item \code{"y"}: Apply a continuous gradient based on the y-axis values.
+#'   }
+#' @param style Character. Plot style. Options:
+#'   \itemize{
+#'     \item \code{"point"} (default): Density-aware scatter plot.
+#'     \item \code{"hex"}: Hexagonal binning.
+#'   }
+#' @param scale Logical. If \code{TRUE}, scores are centered and scaled
+#'   (Z-score) prior to plotting. Default is \code{FALSE}.
+#' @param bins Integer. Number of hex bins along each axis when
+#'   \code{style = "hex"}. Default is \code{40}.
+#' @param point.size Numeric. Point size for \code{style = "point"}.
+#'   Default is \code{1.2}.
+#' @param alpha Numeric. Transparency for points or hexbins.
+#'   Default is \code{0.8}.
+#' @param add.corr Logical. If \code{TRUE}, add Pearson and Spearman
+#'   correlation coefficients to the plot (top-left corner). Default is
+#'   \code{FALSE}.
+#' @param palette Character. Color palette name from
+#'   \code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.
 #' 
 #' @examples
 #' gs <- list(
@@ -138,7 +154,7 @@ scatterEnrichment <- function(input.data,
   plt <- plt +
     ggplot2::labs(x = paste0(x.axis, "\nEnrichment score"),
                   y = paste0(y.axis, "\nEnrichment score")) +
-    ggplot2::theme_classic()
+    .themeEscape(grid_lines = "none")
   
   if (!is.null(facet.by)) {
     plt <- plt + ggplot2::facet_grid(as.formula(paste(". ~", facet.by)))

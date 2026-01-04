@@ -1,23 +1,33 @@
 #' Visualize the PCA of Enrichment Values
-#' 
-#' This function allows to the user to examine the distribution
-#' of principal components run on the enrichment values.
 #'
-#' @param input.data Single‑cell object (Seurat / SCE) **or** the raw list
-#'   returned by [`performPCA()`].
-#' @param dimRed Name of the dimensional‑reduction slot to pull from a
-#'   single‑cell object. Ignored when `input.data` is the list output.
-#' @param x.axis,y.axis Character vectors naming the PCs to display (e.g. "PC1").
-#' @param facet.by Metadata column to facet plot. 
-#' @param style "point" (default) or "hex".
-#' @param add.percent.contribution Include percent variance explained in axis 
-#' labels.
-#' @param display.factors Draw arrows for the top gene‑set loadings.
-#' @param number.of.factors Integer; how many loadings to display if
-#' `display.factors = TRUE`.
-#' @param palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
-#' 
-#' #' @examples 
+#' This function allows the user to examine the distribution of principal
+#' components computed on the enrichment values.
+#'
+#' @param input.data Single-cell object (Seurat / SCE) \strong{or} the raw list
+#'   returned by \code{\link{performPCA}}.
+#' @param dimRed Character. Name of the dimensional-reduction slot to pull from
+#'   a single-cell object. Ignored when \code{input.data} is the list output.
+#' @param x.axis Character. Name of the principal component to display on the
+#'   x-axis (e.g., \code{"PC1"}). Default is \code{"PC1"}.
+#' @param y.axis Character. Name of the principal component to display on the
+#'   y-axis (e.g., \code{"PC2"}). Default is \code{"PC2"}.
+#' @param facet.by Character or \code{NULL}. Metadata column used to facet
+#'   the plot.
+#' @param style Character. Plot style. Options:
+#'   \itemize{
+#'     \item \code{"point"} (default): Density-aware scatter plot.
+#'     \item \code{"hex"}: Hexagonal binning.
+#'   }
+#' @param add.percent.contribution Logical. If \code{TRUE}, include percent
+#'   variance explained in axis labels. Default is \code{TRUE}.
+#' @param display.factors Logical. If \code{TRUE}, draw arrows for the top
+#'   gene-set loadings. Default is \code{FALSE}.
+#' @param number.of.factors Integer. Number of loadings to display when
+#'   \code{display.factors = TRUE}. Default is \code{10}.
+#' @param palette Character. Color palette name from
+#'   \code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.
+#'
+#' @examples 
 #' GS <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
 #'            Tcells = c("CD3E", "CD3D", "CD3G", "CD7","CD8A"))
 #' pbmc_small <- SeuratObject::pbmc_small
@@ -104,7 +114,7 @@ pcaEnrichment <- function(input.data,
         ggplot2::scale_color_gradientn(colors = grDevices::hcl.colors(11, palette)) +
         ggplot2::labs(color = "Density")
     }
-  } else {                                    # hex‑bin
+  } else {                                    # hex-bin
     if (!requireNamespace("hexbin", quietly = TRUE))
       stop("'hexbin' package required for style = 'hex'.")
     g <- g + ggplot2::stat_binhex() +
@@ -112,7 +122,7 @@ pcaEnrichment <- function(input.data,
       ggplot2::labs(fill = "Count")
   }
   
-  g <- g + ggplot2::labs(x = x.title, y = y.title) + ggplot2::theme_classic()
+  g <- g + ggplot2::labs(x = x.title, y = y.title) + .themeEscape(grid_lines = "none")
   
   if (!is.null(facet.by))
     g <- g + ggplot2::facet_grid(stats::as.formula(paste(".~", facet.by)))

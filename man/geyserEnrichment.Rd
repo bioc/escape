@@ -8,7 +8,7 @@ geyserEnrichment(
   input.data,
   assay = NULL,
   group.by = NULL,
-  gene.set,
+  gene.set.use,
   color.by = "group",
   order.by = NULL,
   scale = FALSE,
@@ -19,58 +19,67 @@ geyserEnrichment(
 )
 }
 \arguments{
-\item{input.data}{Output of \code{\link{escape.matrix}} or a single‑cell
+\item{input.data}{Output of \code{\link{escape.matrix}} or a single-cell
 object previously processed by \code{\link{runEscape}}.}
 
-\item{assay}{Name of the assay holding enrichment scores when
-`input.data` is a single‑cell object. Ignored otherwise.}
+\item{assay}{Character. Name of the assay holding enrichment scores when
+\code{input.data} is a single-cell object. Ignored otherwise.}
 
-\item{group.by}{Metadata column plotted on the *x*‑axis.  Defaults to the
-Seurat/SCE `ident` slot when `NULL`.}
+\item{group.by}{Character. Metadata column plotted on the x-axis. Defaults
+to the Seurat/SCE \code{ident} slot when \code{NULL}.}
 
-\item{gene.set}{Character(1). Gene‑set to plot (must exist in the
-enrichment matrix).}
+\item{gene.set.use}{Character. Name of the gene set to display.}
 
-\item{color.by}{Aesthetic mapped to point color. Use either
-*"group"* (default = `group.by`) for categorical coloring or the
-*name of a gene‑set* (e.g. same as `gene.set`) to obtain a numeric
-accepted.}
+\item{color.by}{Character. Aesthetic mapped to point color. Options:
+\itemize{
+  \item \code{"group"} (default): Uses \code{group.by} for categorical
+    coloring.
+  \item \emph{gene-set name}: Use the same value as \code{gene.set.use}
+    to obtain a numeric gradient.
+  \item Any other metadata column present in the data.
+}}
 
-\item{order.by}{How to arrange the x‑axis:
-*`"mean"`* – groups ordered by decreasing group mean;
-*`"group"`* – natural sort of group labels;
-*`NULL`* – keep original ordering.}
+\item{order.by}{Character or \code{NULL}. How to arrange the x-axis:
+\itemize{
+  \item \code{"mean"}: Groups ordered by decreasing group mean.
+  \item \code{"group"}: Natural (alphanumeric) sort of group labels.
+  \item \code{NULL} (default): Keep original ordering.
+}}
 
-\item{scale}{Logical; if `TRUE` scores are centered/scaled (Z‑score) prior
-to plotting.}
+\item{scale}{Logical. If \code{TRUE}, scores are centered and scaled
+(Z-score) prior to plotting. Default is \code{FALSE}.}
 
-\item{facet.by}{Optional metadata column used to facet the plot.}
+\item{facet.by}{Character or \code{NULL}. Metadata column used to facet
+the plot.}
 
-\item{summarise.by}{Optional metadata column used to summarise data.}
+\item{summarise.by}{Character or \code{NULL}. Metadata column used to
+summarise data before plotting.}
 
-\item{summary.stat}{Optional method used to summarize expression within each
-group defined by \code{summarise.by}. One of: \code{"mean"} (default),
-\code{"median"}, \code{"max"}, \code{"sum"}, or \code{"geometric"}.}
+\item{summary.stat}{Character. Method used to summarize expression within
+each group defined by \code{summarise.by}. One of: \code{"mean"}
+(default), \code{"median"}, \code{"max"}, \code{"sum"}, or
+\code{"geometric"}.}
 
-\item{palette}{Character. Any palette from \code{\link[grDevices]{hcl.pals}}.}
+\item{palette}{Character. Color palette name from
+\code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.}
 }
 \value{
 A \pkg{ggplot2} object.
 }
 \description{
-This function allows to the user to examine the distribution of 
+This function allows the user to examine the distribution of
 enrichment across groups by generating a geyser plot.
 }
 \examples{
 gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
            Tcells = c("CD3E", "CD3D", "CD3G", "CD7","CD8A"))
-           
+
 pbmc <- SeuratObject::pbmc_small |>
   runEscape(gene.sets = gs,
             min.size = NULL)
 
-geyserEnrichment(pbmc, 
-                 assay = "escape", 
-                 gene.set = "Tcells")
+geyserEnrichment(pbmc,
+                 assay = "escape",
+                 gene.set.use = "Tcells")
 
 }

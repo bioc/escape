@@ -1,19 +1,30 @@
-#' Adaptive visualisation of enrichIt results
+#' Adaptive Visualisation of enrichIt Results
 #'
-#' @param res `data.frame` returned by [enrichIt()].
-#' @param plot.type `"bar"`, `"dot"`, or `"cnet"`.
-#' @param top Integer. Keep the top *n* terms **per database**
-#' (ranked by adjusted *p*). Set to `Inf` to keep all.
-#' @param x.measure A column in `res` mapped to the *x*-axis
-#' (ignored for `"cnet"`). Default `"-log10(padj)"`.
-#' @param color.measure Column mapped to color (dot plot only).
-#' Default same as `x.measure`.
-#' @param show.counts Logical. Annotate bar plot with the `Count` (number of genes).
-#' @param palette palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
-#' @param ... Further arguments passed to **ggplot2** geoms (e.g. 
-#' `alpha`, `linewidth`).
+#' Create bar, dot, or network plots from \code{\link{enrichIt}} results.
 #'
-#' @return A **patchwork** object (bar / dot) or **ggraph** object (cnet).
+#' @param res Data frame. Output from \code{\link{enrichIt}}.
+#' @param plot.type Character. Visualization type. Options:
+#'   \itemize{
+#'     \item \code{"bar"} (default): Horizontal bar plot.
+#'     \item \code{"dot"}: Dot plot with size and color encoding.
+#'     \item \code{"cnet"}: Concept network plot showing gene-pathway
+#'       relationships.
+#'   }
+#' @param top Integer. Keep the top \emph{n} terms \strong{per database}
+#'   (ranked by adjusted p-value). Set to \code{Inf} to keep all. Default is
+#'   \code{20}.
+#' @param x.measure Character. Column in \code{res} mapped to the x-axis
+#'   (ignored for \code{"cnet"}). Default is \code{"-log10(padj)"}.
+#' @param color.measure Character. Column mapped to color (dot plot only).
+#'   Default is same as \code{x.measure}.
+#' @param show.counts Logical. If \code{TRUE}, annotate bar plot with the
+#'   \code{Count} (number of genes). Default is \code{TRUE}.
+#' @param palette Character. Color palette name from
+#'   \code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.
+#' @param ... Further arguments passed to \pkg{ggplot2} geoms (e.g.,
+#'   \code{alpha}, \code{linewidth}).
+#'
+#' @return A \pkg{ggplot2} object (bar/dot) or \pkg{ggraph} object (cnet).
 #' @export
 #'
 #' @examples
@@ -65,12 +76,12 @@ enrichItPlot <- function(res,
   }
   
   ## Bar Plot
-  if (plot.type == "bar") {                 
+  if (plot.type == "bar") {
     p <- ggplot2::ggplot(res,
                          ggplot2::aes(x = .data[[x.measure]], y = .data$Term)) +
       ggplot2::geom_col(fill = .colorizer(palette, n = 1)) +
       ggplot2::labs(x = x.measure, y = NULL) +
-      ggplot2::theme_classic()
+      .themeEscape(grid_lines = "X")
     
     if (isTRUE(show.counts)) {
       p <- p + ggplot2::geom_text(
@@ -79,9 +90,8 @@ enrichItPlot <- function(res,
         hjust = 0, size = 3)
     }
     p <- p + ggplot2::coord_cartesian(clip = "off")
-  ## Dot Plot  
-  } else if (plot.type == "dot") {         
-    
+  ## Dot Plot
+  } else if (plot.type == "dot") {
     p <- ggplot2::ggplot(res,
                          ggplot2::aes(x = .data$geneRatio, y = .data$Term,
                                       color = .data[[color.measure]],
@@ -90,7 +100,7 @@ enrichItPlot <- function(res,
       ggplot2::scale_size_continuous(name = "Core Count") +
       ggplot2::labs(x = "geneRatio", y = NULL,
                     color = color.measure) +
-      ggplot2::theme_classic() +
+      .themeEscape(grid_lines = "X") +
       ggplot2::theme(legend.box = "vertical")
     
     if (!is.null(palette))
