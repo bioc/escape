@@ -2,7 +2,7 @@
 #### Easy single cell analysis platform for enrichment
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/ncborcherding/escape/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ncborcherding/escape/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/BorchLab/escape/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/BorchLab/escape/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/BorchLab/escape/branch/master/graph/badge.svg)](https://app.codecov.io/gh/BorchLab/escape?branch=master)
 [![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://ncborcherding.github.io/vignettes/escape_vignette.html)
 [![Bioc Release Build](http://www.bioconductor.org/shields/build/release/bioc/escape.svg)](http://www.bioconductor.org/checkResults/release/bioc-LATEST/escape)
