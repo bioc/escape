@@ -1,27 +1,33 @@
 #' Plot Enrichment Distributions Using Split or Dodged Violin Plots
 #'
 #' Visualize the distribution of gene set enrichment scores across groups using
-#' violin plots. When `split.by` contains exactly two levels, the function draws
-#' split violins for easy group comparison within each `group.by` category. If
-#' `split.by` has more than two levels, standard dodged violins are drawn instead.
+#' violin plots. When \code{split.by} contains exactly two levels, the function
+#' draws split violins for easy group comparison within each \code{group.by}
+#' category. If \code{split.by} has more than two levels, standard dodged
+#' violins are drawn instead.
 #'
-#' @param input.data Output of \code{\link{escape.matrix}} or a single‑cell
-#' object previously processed by \code{\link{runEscape}}.
-#' @param assay Name of the assay holding enrichment scores when
-#' `input.data` is a single‑cell object. Ignored otherwise.
-#' @param split.by A metadata column used to split or color violins. Must contain 
-#'   at least two levels. If it contains more than two, dodged violins are used.
-#' @param group.by Metadata column plotted on the *x*‑axis.  Defaults to the
-#' Seurat/SCE `ident` slot when `NULL`.
-#' @param gene.set.use Character(1).  Name of the gene set to display.
-#' @param order.by How to arrange the x‑axis:
-#'   *`"mean"`* – groups ordered by decreasing group mean;
-#'   *`"group"`* – natural sort of group labels;
-#'   *`NULL`* – keep original ordering.
-#' @param facet.by Optional metadata column used to facet the plot.
-#' @param scale Logical; if `TRUE` scores are centred/scaled (Z‑score) prior
-#' to plotting.
-#' @param palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
+#' @param input.data Output of \code{\link{escape.matrix}} or a single-cell
+#'   object previously processed by \code{\link{runEscape}}.
+#' @param assay Character. Name of the assay holding enrichment scores when
+#'   \code{input.data} is a single-cell object. Ignored otherwise.
+#' @param split.by Character. Metadata column used to split or color violins.
+#'   Must contain at least two levels. If more than two levels are present,
+#'   dodged violins are used instead of split violins.
+#' @param group.by Character. Metadata column plotted on the x-axis. Defaults
+#'   to the Seurat/SCE \code{ident} slot when \code{NULL}.
+#' @param gene.set.use Character. Name of the gene set to display.
+#' @param order.by Character or \code{NULL}. How to arrange the x-axis:
+#'   \itemize{
+#'     \item \code{"mean"}: Groups ordered by decreasing group mean.
+#'     \item \code{"group"}: Natural (alphanumeric) sort of group labels.
+#'     \item \code{NULL} (default): Keep original ordering.
+#'   }
+#' @param facet.by Character or \code{NULL}. Metadata column used to facet
+#'   the plot.
+#' @param scale Logical. If \code{TRUE}, scores are centered and scaled
+#'   (Z-score) prior to plotting. Default is \code{TRUE}.
+#' @param palette Character. Color palette name from
+#'   \code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.
 #'
 #' @return A [ggplot2] object.
 #'
@@ -86,7 +92,7 @@ splitEnrichment <- function(input.data,
     ylab(paste0(gene.set.use, "\nEnrichment Score")) +
     labs(fill = split.by) +
     scale_fill_manual(values = .colorizer(palette, n.levels)) +
-    theme_classic()
+    .themeEscape(grid_lines = "Y")
   
   # Split violin if binary, otherwise dodge standard violins
   if (n.levels == 2) {

@@ -1,32 +1,35 @@
-#' Get a collection of gene sets from the msigdb
+#' Get a Collection of Gene Sets from MSigDB
 #'
-#' This function retrieves gene sets from msigdb and caches the downloaded object 
-#' for future calls. It allows subsetting by main collection (library), 
-#' subcollection, or specific gene sets, and only supports human 
-#' ("Homo sapiens") and mouse ("Mus musculus").
+#' This function retrieves gene sets from MSigDB and caches the downloaded
+#' object for future calls. It allows subsetting by main collection (library),
+#' subcollection, or specific gene sets, and only supports human
+#' (\code{"Homo sapiens"}) and mouse (\code{"Mus musculus"}).
 #'
-#' @param species `"Homo sapiens"` (default) or `"Mus musculus"`.
-#' @param library Character. Optional vector of main collection codes 
-#' (e.g. `"H"`, `"C5"`).
-#' @param subcategory Character. Optional vector of sub-collection codes 
-#' (e.g. `"GO:BP"`).
-#' @param gene.sets Character. Optional vector of specific gene-set names.
-#' @param version MSigDB version (character, default `"7.4"`).
-#' @param id Identifier type (default `"SYM"` for symbols).
+#' @param species Character. Species name. Either \code{"Homo sapiens"}
+#'   (default) or \code{"Mus musculus"}.
+#' @param library Character or \code{NULL}. Vector of main collection codes
+#'   (e.g., \code{"H"}, \code{"C5"}). Default is \code{NULL} (all collections).
+#' @param subcategory Character or \code{NULL}. Vector of sub-collection codes
+#'   (e.g., \code{"GO:BP"}). Default is \code{NULL} (all subcategories).
+#' @param gene.sets Character or \code{NULL}. Vector of specific gene-set
+#'   names. Default is \code{NULL} (all gene sets).
+#' @param version Character. MSigDB version. Default is \code{"7.4"}.
+#' @param id Character. Identifier type. Default is \code{"SYM"} (gene
+#'   symbols).
 #'
 #' @examples
 #' \dontrun{
 #' # Get all hallmark gene sets from human.
-#' gs <- getGeneSets(species = "Homo sapiens", 
+#' gs <- getGeneSets(species = "Homo sapiens",
 #'                   library = "H")
 #'
 #' # Get a subset based on main collection and subcollection.
-#' gs <- getGeneSets(species = "Homo sapiens", 
-#'                   library = c("C2", "C5"), 
+#' gs <- getGeneSets(species = "Homo sapiens",
+#'                   library = c("C2", "C5"),
 #'                   subcategory = "GO:BP")
 #' }
 #'
-#' @return A named `list` of character vectors (gene IDs).
+#' @return A named list of character vectors (gene IDs).
 #' @export
 getGeneSets <- function(species      = c("Homo sapiens", "Mus musculus"),
                         library      = NULL,

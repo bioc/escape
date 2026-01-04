@@ -1,37 +1,43 @@
 #' Classical GSEA-style Running-Enrichment Plot
 #'
-#' Produces the familiar two-panel GSEA graphic—running enrichment score
-#' (RES) plus a “hit” rug—for a **single gene-set** evaluated across
-#' multiple biological groups (clusters, conditions, samples, ...).  
+#' Produces the familiar two-panel GSEA graphic: running enrichment score (RES)
+#' plus a "hit" rug for a \strong{single gene-set} evaluated across multiple
+#' biological groups (clusters, conditions, samples, etc.).
 #'
-#' **Algorithm (Subramanian _et al._, PNAS 2005)**  
-#' 1. Within every group, library-size-normalise counts to CPM.  
-#' 2. Collapse gene expression with `summary.fun` (mean/median/…).  
-#' 3. Rank genes (descending) to obtain one ordered list per group.  
-#' 4. Compute the weighted Kolmogorov–Smirnov running score  
-#'    (weight = \|stat\|^*p*).  
-#' 5. ES = maximum signed deviation of the curve.  
+#' @section Algorithm:
+#' Based on Subramanian \emph{et al.}, PNAS 2005:
+#' \enumerate{
+#'   \item Within every group, library-size-normalize counts to CPM.
+#'   \item Collapse gene expression with \code{summary.fun} (mean/median/etc.).
+#'   \item Rank genes (descending) to obtain one ordered list per group.
+#'   \item Compute the weighted Kolmogorov-Smirnov running score
+#'     (weight = |stat|^p).
+#'   \item ES = maximum signed deviation of the curve.
+#' }
 #'
-#' @param input.data  A \link[SeuratObject]{Seurat} object or a
-#' \link[SingleCellExperiment]{SingleCellExperiment}.
-#' @param gene.set.use Character(1). Name of the gene set to display.
+#' @param input.data A \link[SeuratObject]{Seurat} object or a
+#'   \link[SingleCellExperiment]{SingleCellExperiment}.
+#' @param gene.set.use Character. Name of the gene set to display.
 #' @param gene.sets A named list of character vectors, the result of
-#' [getGeneSets()], or the built-in data object [escape.gene.sets].
-#' @param group.by Metadata column. Defaults to the Seurat/SCE `ident` 
-#' slot when `NULL`.
-#' @param summary.fun Method used to collapse expression within each
-#' group **before** ranking: one of `"mean"` (default), `"median"`, `"max"`,
-#'`"sum"`, or `"geometric"`.
-#' @param p Weighting exponent in the KS statistic (classical GSEA uses `p = 1`).
-#' @param nperm Integer >= 0. Gene-label permutations per group (default 1000). 
-#' `0` value will skip NES/*p* calculation.
-#' @param rug.height Vertical spacing of the hit rug as a fraction of the
-#' y-axis (default `0.02`).
-#' @param digits Number of decimal places displayed for ES in the
-#' legend (default `2`).
+#'   \code{\link{getGeneSets}}, or the built-in data object
+#'   \code{\link{escape.gene.sets}}.
+#' @param group.by Character. Metadata column used for grouping. Defaults to
+#'   the Seurat/SCE \code{ident} slot when \code{NULL}.
+#' @param summary.fun Character. Method used to collapse expression within
+#'   each group \strong{before} ranking. One of: \code{"mean"} (default),
+#'   \code{"median"}, \code{"max"}, \code{"sum"}, or \code{"geometric"}.
+#' @param p Numeric. Weighting exponent in the KS statistic. Classical GSEA
+#'   uses \code{p = 1}. Default is \code{1}.
+#' @param nperm Integer. Number of gene-label permutations per group.
+#'   Default is \code{1000}. Set to \code{0} to skip NES/p-value calculation.
+#' @param rug.height Numeric. Vertical spacing of the hit rug as a fraction
+#'   of the y-axis. Default is \code{0.02}.
+#' @param digits Integer. Number of decimal places displayed for ES in the
+#'   legend. Default is \code{2}.
 #' @param BPPARAM A \pkg{BiocParallel} parameter object describing the
-#' parallel backend. 
-#' @param palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
+#'   parallel backend. Default is \code{NULL} (serial execution).
+#' @param palette Character. Color palette name from
+#'   \code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.
 #'  
 #' @examples
 #' pbmc_small <- SeuratObject::pbmc_small
@@ -176,24 +182,24 @@ gseaEnrichment <- function(input.data,
   
   p_top <- ggplot2::ggplot(running.df, ggplot2::aes(rank, ES, colour = grp)) +
     ggplot2::geom_step(linewidth = 0.8) +
-    ggplot2::geom_hline(yintercept = 0) + 
+    ggplot2::geom_hline(yintercept = 0) +
     ggplot2::scale_colour_manual(values = cols, name = NULL) +
     ggplot2::labs(y = paste0(gene.set.use, "\nRunning Enrichment Score")) +
-    ggplot2::theme_classic() +
-    ggplot2::theme(axis.title.x = element_blank(),
-                   axis.text.x  = element_blank(),
-                   axis.ticks.x = element_blank())
+    .themeEscape(grid_lines = "Y") +
+    ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                   axis.text.x  = ggplot2::element_blank(),
+                   axis.ticks.x = ggplot2::element_blank())
   
   p_mid <- ggplot2::ggplot(rug.df) +
     ggplot2::geom_segment(ggplot2::aes(x, y, xend = xend, yend = yend,
                                        colour = grp)) +
     ggplot2::scale_colour_manual(values = cols, guide = "none") +
-    theme_classic() +
-    ggplot2::ylim(-length(groups)*rug.height, 0) + 
-    theme(axis.title = element_blank(),
-          axis.text.y  = element_blank(),
-          axis.ticks.y = element_blank(),
-          panel.border = element_rect(fill = NA, colour = "black", linewidth = 0.5))
+    .themeEscape(grid_lines = "none") +
+    ggplot2::ylim(-length(groups)*rug.height, 0) +
+    ggplot2::theme(axis.title   = ggplot2::element_blank(),
+                   axis.text.y  = ggplot2::element_blank(),
+                   axis.ticks.y = ggplot2::element_blank(),
+                   panel.border = ggplot2::element_rect(fill = NA, colour = "black", linewidth = 0.5))
   
   patchwork::wrap_plots(p_top, p_mid, ncol = 1, heights = c(3, 0.4))
 }

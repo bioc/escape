@@ -1,20 +1,21 @@
 #' Visualize Mean Density Ranking of Genes Across Gene Sets
-#' 
-#' This function allows to the user to examine the mean ranking
-#' within the groups across the gene set. The visualization uses
-#' the density function to display the relative position and distribution
-#' of rank.
+#'
+#' This function allows the user to examine the mean ranking within groups
+#' across the gene set. The visualization uses the density function to display
+#' the relative position and distribution of rank.
 #'
 #' @param input.data A \link[SeuratObject]{Seurat} object or a
-#' \link[SingleCellExperiment]{SingleCellExperiment}.
-#' @param gene.set.use Character(1).  Name of the gene set to display.
+#'   \link[SingleCellExperiment]{SingleCellExperiment}.
+#' @param gene.set.use Character. Name of the gene set to display.
 #' @param gene.sets A named list of character vectors, the result of
-#' [getGeneSets()], or the built-in data object [escape.gene.sets].
-#' @param group.by Metadata column. Defaults to the Seurat/SCE `ident` 
-#' slot when `NULL`.
-#' @param rug.height Vertical spacing of the hit rug as a fraction of the
-#' y-axis (default `0.02`).
-#' @param palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
+#'   \code{\link{getGeneSets}}, or the built-in data object
+#'   \code{\link{escape.gene.sets}}.
+#' @param group.by Character. Metadata column used for grouping. Defaults to
+#'   the Seurat/SCE \code{ident} slot when \code{NULL}.
+#' @param rug.height Numeric. Vertical spacing of the hit rug as a fraction of
+#'   the y-axis. Default is \code{0.02}.
+#' @param palette Character. Color palette name from
+#'   \code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.
 #'
 #' @examples
 #' gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
@@ -67,9 +68,9 @@ densityEnrichment <- function(input.data,
     tmp  <- cnts[, cols, drop = FALSE]
     
     dens <- suppressWarnings(
-      compute.cdf(tmp, seq_len(ncol(tmp)), TRUE, FALSE)
+      compute.cdf(tmp, seq_len(ncol(tmp)), FALSE, FALSE)
     )
-    ord  <- apply(dens, 2, order, decreasing = TRUE)          # genes × cells
+    ord  <- apply(dens, 2, order, decreasing = TRUE)          # genes x cells
     scores <- vapply(seq_len(ncol(ord)),
                      function(j) weights[ord[, j]],
                      numeric(n.genes))
@@ -89,37 +90,46 @@ densityEnrichment <- function(input.data,
   
   ## -------- 4  Plots ---------------------------------------------------------
   cols <- .colorizer(palette, length(groups))
-  plot.df <- subset(long.df, gene.set.query == "yes" & is.finite(value))
-  
+
+  # Filter to gene set members with valid values
+  plot.df <- long.df[long.df$gene.set.query == "yes" & is.finite(long.df$value), ]
+
+  # Alphanumerically sort group labels for consistent ordering
+  plot.df$variable <- factor(plot.df$variable,
+                             levels = .alphanumericalSort(unique(plot.df$variable)))
+
+  # Density plot panel
+
   p1 <- ggplot(plot.df,
                aes(x = value, fill = variable)) +
-    geom_density(alpha = 0.4, colour = "black") +
+    geom_density(alpha = 0.5, colour = "black", linewidth = 0.4) +
     scale_fill_manual(values = cols, name = "Group") +
-    labs(y = "Rank density") +
-    theme_classic() +
+    labs(y = "Rank Density",
+         title = paste0("Gene Set: ", gene.set.use)) +
+    .themeEscape(grid_lines = "Y") +
     theme(axis.title.x = element_blank(),
           axis.text.x  = element_blank(),
-          axis.ticks.x = element_blank())
-  
-  ## simple segment plot for mean-rank positions
-  offset <- rug.height
-  seg.df <- within(plot.df, {
-    ord   <- match(variable, unique(variable))
-    y     <- -(ord * offset - offset)
-    yend  <- y - offset
-  })
-  
+          axis.ticks.x = element_blank(),
+          plot.title   = element_text(hjust = 0.5))
+
+  # Build rug segment data with proper stacking
+  seg.df <- plot.df
+  seg.df$ord  <- match(seg.df$variable, levels(seg.df$variable))
+  seg.df$y    <- -(seg.df$ord - 1) * rug.height
+  seg.df$yend <- seg.df$y - rug.height * 0.9
+
+  # Rug plot panel
   p2 <- ggplot(seg.df, aes(x = value, xend = value,
                            y = y, yend = yend,
                            colour = variable)) +
-    geom_segment(linewidth = 1) +
+    geom_segment(linewidth = 0.8, alpha = 0.7) +
     scale_colour_manual(values = cols, guide = "none") +
-    labs(x = "Mean rank order") +
-    theme_classic() +
+    labs(x = "Mean Rank Order") +
+    .themeEscape(grid_lines = "none") +
     theme(axis.title.y = element_blank(),
           axis.text.y  = element_blank(),
           axis.ticks.y = element_blank(),
-          panel.border = element_rect(fill = NA, colour = "black"))
-  
-  patchwork::wrap_plots(p1, p2, ncol = 1, heights = c(3,1))
+          panel.border = element_rect(fill = NA, colour = "grey50", linewidth = 0.5))
+
+  patchwork::wrap_plots(p1, p2, ncol = 1, heights = c(3, 1))
 }

@@ -7,7 +7,7 @@ GS    <- list(
 )
 
 # helper: number of groups in default 'ident' column
-n_groups <- length(unique(as.character(Idents(pbmc))))
+n_groups <- length(unique(as.character(SeuratObject::Idents(pbmc))))
 
 
 # ── 1  Core functionality returns patchwork object ──────────────────

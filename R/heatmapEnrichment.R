@@ -1,26 +1,31 @@
 #' Visualize Enrichment Value Summaries Using Heatmaps
-#' 
-#' This function allows to the user to examine the heatmap with the mean
-#' enrichment values by group. The heatmap will have the gene sets as rows
-#' and columns will be the grouping variable.
 #'
-#' @param input.data Output of \code{\link{escape.matrix}} or a single‑cell
-#' object previously processed by \code{\link{runEscape}}.
-#' @param assay Name of the assay holding enrichment scores when
-#' `input.data` is a single‑cell object. Ignored otherwise.
-#' @param group.by Metadata column plotted on the *x*‑axis.  Defaults to the
-#' Seurat/SCE `ident` slot when `NULL`.
-#' @param gene.set.use Vector of gene‑set names to plot, or \code{"all"}
-#' (default) to show every available gene set.
-#' @param cluster.rows,cluster.columns Logical; if \code{TRUE}, rows/columns
-#' are ordered by Ward‑linkage hierarchical clustering (Euclidean distance).
-#' @param facet.by Optional metadata column used to facet the plot.
-#' @param scale If \code{TRUE}, Z‑transforms each gene‑set column **after**
-#' summarization.
-#' @param summary.stat Optional method used to summarize expression within each
-#'   group. One of: \code{"mean"} (default), \code{"median"}, \code{"max"}, 
-#'   \code{"sum"}, or \code{"geometric"}.
-#' @param palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
+#' This function allows the user to examine a heatmap with the mean enrichment
+#' values by group. The heatmap displays gene sets as rows and the grouping
+#' variable as columns.
+#'
+#' @param input.data Output of \code{\link{escape.matrix}} or a single-cell
+#'   object previously processed by \code{\link{runEscape}}.
+#' @param assay Character. Name of the assay holding enrichment scores when
+#'   \code{input.data} is a single-cell object. Ignored otherwise.
+#' @param group.by Character. Metadata column plotted on the x-axis. Defaults
+#'   to the Seurat/SCE \code{ident} slot when \code{NULL}.
+#' @param gene.set.use Character vector or \code{"all"}. Gene-set names to
+#'   plot. Use \code{"all"} (default) to show every available gene set.
+#' @param cluster.rows Logical. If \code{TRUE}, rows are ordered by Ward-linkage
+#'   hierarchical clustering (Euclidean distance). Default is \code{FALSE}.
+#' @param cluster.columns Logical. If \code{TRUE}, columns are ordered by
+#'   Ward-linkage hierarchical clustering (Euclidean distance). Default is
+#'   \code{FALSE}.
+#' @param facet.by Character or \code{NULL}. Metadata column used to facet
+#'   the plot.
+#' @param scale Logical. If \code{TRUE}, Z-transforms each gene-set column
+#'   \strong{after} summarization. Default is \code{FALSE}.
+#' @param summary.stat Character. Method used to summarize expression within
+#'   each group. One of: \code{"mean"} (default), \code{"median"},
+#'   \code{"max"}, \code{"sum"}, or \code{"geometric"}.
+#' @param palette Character. Color palette name from
+#'   \code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.
 #'
 #' @return A \code{ggplot2} object.
 #' @importFrom stats aggregate dist hclust
@@ -107,11 +112,11 @@ heatmapEnrichment <- function(input.data,
     ggplot2::scale_x_discrete(expand = c(0, 0)) +
     ggplot2::scale_y_discrete(expand = c(0, 0)) +
     ggplot2::coord_equal() +
-    ggplot2::theme_classic() +
-    ggplot2::theme(axis.title      = ggplot2::element_blank(),
-                   axis.ticks      = ggplot2::element_blank(),
-                   legend.position = "bottom",
-                   legend.direction= "horizontal")
+    .themeEscape(grid_lines = "none", legend_position = "bottom") +
+    ggplot2::theme(axis.title       = ggplot2::element_blank(),
+                   axis.ticks       = ggplot2::element_blank(),
+                   legend.direction = "horizontal",
+                   panel.border     = ggplot2::element_blank())
   
   if (!is.null(facet.by))
     p <- p + ggplot2::facet_grid(stats::as.formula(paste(". ~", facet.by)))

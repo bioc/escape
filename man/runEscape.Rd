@@ -20,61 +20,64 @@ runEscape(
 )
 }
 \arguments{
-\item{input.data}{A raw‐counts matrix (`genes × cells`), a
+\item{input.data}{A raw-counts matrix (genes x cells), a
 \link[SeuratObject]{Seurat} object, or a
 \link[SingleCellExperiment]{SingleCellExperiment}. Gene identifiers must
-match those in `gene.sets`.}
+match those in \code{gene.sets}.}
 
 \item{gene.sets}{A named list of character vectors, the result of
-[getGeneSets()], or the built-in data object [escape.gene.sets]. 
-List names become column names in the result.}
+\code{\link{getGeneSets}}, or the built-in data object
+\code{\link{escape.gene.sets}}. List names become column names in the
+result.}
 
-\item{method}{Scoring algorithm (case-insensitive). One of `"GSVA"`, 
-`"ssGSEA"`, `"UCell"`, or `"AUCell"`. Default **`"ssGSEA"`**.}
+\item{method}{Character. Scoring algorithm (case-insensitive). One of
+\code{"GSVA"}, \code{"ssGSEA"}, \code{"UCell"}, or \code{"AUCell"}.
+Default is \code{"ssGSEA"}.}
 
-\item{groups}{Integer >= 1. Number of cells per processing chunk.
-Larger values reduce overhead but increase memory usage.  Default **1000**.}
+\item{groups}{Integer. Number of cells per processing chunk. Larger values
+reduce overhead but increase memory usage. Default is \code{1000}.}
 
-\item{min.size}{Minimum number of genes from a set that must be detected
-in the expression matrix for that set to be scored.  Default **5**.
-Use `NULL` to disable filtering.}
+\item{min.size}{Integer or \code{NULL}. Minimum number of genes from a set
+that must be detected in the expression matrix for that set to be scored.
+Default is \code{5}. Use \code{NULL} to disable filtering.}
 
-\item{normalize}{Logical. If `TRUE`, the score matrix is passed to
-[performNormalization()] (drop-out scaling and optional log transform).
-Default **FALSE**.}
+\item{normalize}{Logical. If \code{TRUE}, the score matrix is passed to
+\code{\link{performNormalization}} (drop-out scaling and optional log
+transform). Default is \code{FALSE}.}
 
-\item{make.positive}{Logical. If `TRUE` *and* `normalize = TRUE`, shifts
-every gene-set column so its global minimum is zero, facilitating
-downstream log-ratio analyses.  Default **FALSE**.}
+\item{make.positive}{Logical. If \code{TRUE} \emph{and}
+\code{normalize = TRUE}, shifts every gene-set column so its global
+minimum is zero, facilitating downstream log-ratio analyses. Default is
+\code{FALSE}.}
 
 \item{new.assay.name}{Character. Name for the assay that will store the
-enrichment matrix in the returned object. Default **"escape"**.}
+enrichment matrix in the returned object. Default is \code{"escape"}.}
 
-\item{min.expr.cells}{Numeric. Gene-expression filter threshold (see
-details above). Default **0** (no gene filtering).}
+\item{min.expr.cells}{Numeric. Gene-expression filter threshold. Default is
+\code{0} (no gene filtering).}
 
-\item{min.filter.by}{Character or `NULL`.  Column name in `meta.data`
-(Seurat) or `colData` (SCE) defining groups within which the
-`min.expr.cells` rule is applied.  Default **`NULL`**.}
+\item{min.filter.by}{Character or \code{NULL}. Column name in
+\code{meta.data} (Seurat) or \code{colData} (SCE) defining groups within
+which the \code{min.expr.cells} rule is applied. Default is \code{NULL}.}
 
 \item{BPPARAM}{A \pkg{BiocParallel} parameter object describing the
-parallel backend.}
+parallel backend. Default is \code{NULL} (serial execution).}
 
-\item{...}{Extra arguments passed verbatim to the chosen back-end
-scoring function (`gsva()`, `ScoreSignatures_UCell()`, or
-`AUCell_calcAUC()`).}
+\item{...}{Extra arguments passed verbatim to the chosen back-end scoring
+function (\code{gsva()}, \code{ScoreSignatures_UCell()}, or
+\code{AUCell_calcAUC()}).}
 }
 \value{
 The input single-cell object with an additional assay containing the
-enrichment scores (`cells × gene-sets`). Matrix orientation follows
-standard single-cell conventions (gene-sets as rows inside the assay).
+  enrichment scores (cells x gene-sets). Matrix orientation follows standard
+  single-cell conventions (gene-sets as rows inside the assay).
 }
 \description{
-`runEscape()` is a convenience wrapper around [escape.matrix()] that
-computes enrichment scores and inserts them as a new assay (default
-`"escape"`) in a \pkg{Seurat} or \pkg{SingleCellExperiment} object.  All
-arguments (except `new.assay.name`) map directly to their counterparts in
-`escape.matrix()`.
+\code{runEscape()} is a convenience wrapper around \code{\link{escape.matrix}}
+that computes enrichment scores and inserts them as a new assay (default
+\code{"escape"}) in a \pkg{Seurat} or \pkg{SingleCellExperiment} object. All
+arguments (except \code{new.assay.name}) map directly to their counterparts
+in \code{escape.matrix()}.
 }
 \examples{
 gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
@@ -90,9 +93,10 @@ sce <- runEscape(sce,
 
 }
 \seealso{
-[escape.matrix()] for the underlying computation,
-[performNormalization()] to add normalized scores, [heatmapEnrichment()], 
-[ridgeEnrichment()] and related plotting helpers for visualization.
+\code{\link{escape.matrix}} for the underlying computation;
+  \code{\link{performNormalization}} to add normalized scores;
+  \code{\link{heatmapEnrichment}}, \code{\link{ridgeEnrichment}}, and
+  related plotting helpers for visualization.
 }
 \author{
 Nick Borcherding, Jared Andrews

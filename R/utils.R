@@ -201,25 +201,29 @@
 }
 
 # -----------------------------------------------------------------------------
-#  EXPRESSION MATRIX EXTRACTOR 
+#  EXPRESSION MATRIX EXTRACTOR
 # -----------------------------------------------------------------------------
 #' @importFrom MatrixGenerics rowSums2
 .cntEval <- function(obj, assay = "RNA", type = "counts") {
   if (.is_seurat(obj)) {
     # Use generic accessor if available
     if (requireNamespace("SeuratObject", quietly = TRUE)) {
-      suppressWarnings(
+      # Use layer argument for SeuratObject >= 5.0.0, slot for older versions
+      so_version <- utils::packageVersion("SeuratObject")
+      if (so_version >= "5.0.0") {
+        cnts <- SeuratObject::GetAssayData(obj, assay = assay, layer = type)
+      } else {
         cnts <- SeuratObject::GetAssayData(obj, assay = assay, slot = type)
-      )
+      }
     } else {
       cnts <- obj@assays[[assay]][[type]]
     }
-    
+
   } else if (.is_sce(obj)) {
     if (requireNamespace("SummarizedExperiment", quietly = TRUE) &&
         requireNamespace("SingleCellExperiment", quietly = TRUE)) {
       pos <- if (assay == "RNA") "counts" else assay
-      
+
       cnts <- if (assay == "RNA") {
         SummarizedExperiment::assay(obj, pos)
       } else {
@@ -297,7 +301,7 @@
 }
 
 # -----------------------------------------------------------------------------
-#  GENE‑SET / META HELPERS 
+#  GENE-SET / META HELPERS 
 # -----------------------------------------------------------------------------
 .GS.check <- function(gene.sets) {
   if (is.null(gene.sets))
@@ -423,7 +427,7 @@
   )
 }
 
-#─ Split a matrix into equal‑sized column chunks ------------------------------
+#─ Split a matrix into equal-sized column chunks ------------------------------
 .split_cols <- function(mat, chunk) {
   if (ncol(mat) <= chunk) return(list(mat))
   idx <- split(seq_len(ncol(mat)), ceiling(seq_len(ncol(mat)) / chunk))
@@ -495,6 +499,94 @@ utils::globalVariables(c(
   "ES", "grp", "x", "y", "xend", "yend", "group", "value", "variable",
   "gene.set.query", "index"
 ))
+
+# -----------------------------------------------------------------------------
+#  THEME HELPER
+# -----------------------------------------------------------------------------
+#' @importFrom ggplot2 %+replace%
+.themeEscape <- function(base_size = 12,
+                         base_family = "sans",
+                         grid_lines = "Y",
+                         axis_lines = FALSE,
+                         legend_position = "right") {
+
+  t <- ggplot2::theme_bw(base_size = base_size, base_family = base_family)
+
+  t <- t %+replace%
+    ggplot2::theme(
+      # Plot titles and caption
+      plot.title = ggplot2::element_text(
+        size = ggplot2::rel(1.2), hjust = 0, face = "bold",
+        margin = ggplot2::margin(b = base_size / 2)
+      ),
+      plot.subtitle = ggplot2::element_text(
+        hjust = 0, face = "italic",
+        margin = ggplot2::margin(b = base_size)
+      ),
+      plot.caption = ggplot2::element_text(
+        size = ggplot2::rel(0.8), hjust = 1
+      ),
+
+      # Axis titles and text
+      axis.title = ggplot2::element_text(size = ggplot2::rel(1), face = "bold"),
+      axis.text = ggplot2::element_text(size = ggplot2::rel(0.85)),
+
+      # Facet strips
+      strip.text = ggplot2::element_text(
+        size = ggplot2::rel(0.9),
+        face = "bold",
+        margin = ggplot2::margin(base_size / 2.5, base_size / 2.5, base_size / 2.5, base_size / 2.5)
+      ),
+      strip.background = ggplot2::element_rect(fill = "grey90", color = NA),
+
+      # Panel border and background
+      panel.border = ggplot2::element_rect(color = "grey70", fill = NA, linewidth = 0.5),
+      panel.background = ggplot2::element_rect(fill = "white", color = NA),
+
+      # Legend styling
+      legend.title = ggplot2::element_text(face = "bold"),
+      legend.position = legend_position,
+      legend.key = ggplot2::element_rect(fill = "white"),
+
+      # Plot spacing/margins
+      plot.margin = ggplot2::margin(base_size, base_size, base_size, base_size)
+    )
+
+  # Handle grid lines
+  grid_lines <- toupper(grid_lines)
+  if (grid_lines == "NONE") {
+    t <- t + ggplot2::theme(
+      panel.grid.major = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank()
+    )
+  } else if (grid_lines == "X") {
+    t <- t + ggplot2::theme(
+      panel.grid.major.y = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_line(color = "grey85", linewidth = 0.25)
+    )
+  } else if (grid_lines == "Y") {
+    t <- t + ggplot2::theme(
+      panel.grid.major.x = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major.y = ggplot2::element_line(color = "grey85", linewidth = 0.25)
+    )
+  } else {
+    t <- t + ggplot2::theme(
+      panel.grid.major = ggplot2::element_line(color = "grey85", linewidth = 0.25),
+      panel.grid.minor = ggplot2::element_blank()
+    )
+  }
+
+  # Handle axis lines
+  if (isTRUE(axis_lines)) {
+    t <- t + ggplot2::theme(
+      axis.line = ggplot2::element_line(color = "grey30", linewidth = 0.5)
+    )
+  }
+
+  return(t)
+}
 
 # helper to match summary function
 .match_summary_fun <- function(fun) {

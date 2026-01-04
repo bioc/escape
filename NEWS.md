@@ -1,3 +1,26 @@
+# 2.6.2
+
+## NEW FEATURES
+* Added `.themeEscape()` internal theme function for consistent visualization styling across all plotting functions
+
+## ENHANCEMENTS
+* **Seurat v5 compatibility**: Updated `.cntEval()` to detect SeuratObject version and use `layer` argument instead of deprecated `slot` argument for SeuratObject >= 5.0.0
+* **Consistent theming**: Applied unified theme styling across all visualization functions (`ridgeEnrichment()`, `splitEnrichment()`, `geyserEnrichment()`, `heatmapEnrichment()`, `scatterEnrichment()`, `pcaEnrichment()`, `densityEnrichment()`, `gseaEnrichment()`, `enrichItPlot()`)
+* **Improved `densityEnrichment()`**: Added plot title showing gene set name, alphanumeric sorting of group labels, and improved rug segment styling
+
+## DOCUMENTATION
+* Reformatted roxygen2 documentation across all exported functions for consistency
+* Standardized use of `\code{}`, `\itemize{}`, `\enumerate{}`, `\strong{}`, and `\emph{}` tags
+* Replaced Unicode characters with ASCII equivalents for better portability
+
+# 2.6.1
+
+Update to 2.6.0 to match Bioconductor Release 3.22 on 2025/10/30
+
+## BUG FIXES
+* Fixed issue `densityEnrichment()` interaction with GSVA package through the function `compute.gene.cdf`
+
+
 # 2.5.5  (2025-06-11)
 
 ## Bug fix & enhanced functionality

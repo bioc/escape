@@ -22,45 +22,63 @@ scatterEnrichment(
 )
 }
 \arguments{
-\item{input.data}{Output of \code{\link{escape.matrix}} or a single‑cell
+\item{input.data}{Output of \code{\link{escape.matrix}} or a single-cell
 object previously processed by \code{\link{runEscape}}.}
 
-\item{assay}{Name of the assay holding enrichment scores when
-`input.data` is a single‑cell object. Ignored otherwise.}
+\item{assay}{Character. Name of the assay holding enrichment scores when
+\code{input.data} is a single-cell object. Ignored otherwise.}
 
-\item{x.axis, y.axis}{Gene-set names to plot on the *x* and *y* axes.}
+\item{x.axis}{Character. Gene-set name to plot on the x-axis.}
 
-\item{facet.by}{Optional metadata column used to facet the plot.}
+\item{y.axis}{Character. Gene-set name to plot on the y-axis.}
 
-\item{group.by}{Metadata column plotted.  Defaults to the
-Seurat/SCE `ident` slot when `NULL`.}
+\item{facet.by}{Character or \code{NULL}. Metadata column used to facet
+the plot.}
 
-\item{color.by}{Aesthetic mapped to point color. Use 
-`"density"` (default), `"group"`, `"x"`, or `"y"`.  The latter two apply a 
-continuous gradient to the corresponding axis.}
+\item{group.by}{Character. Metadata column used when \code{color.by = "group"}.
+Defaults to the Seurat/SCE \code{ident} slot when \code{NULL}.}
 
-\item{style}{`"point"` (density-aware points) or `"hex"` (hex-bin).}
+\item{color.by}{Character. Aesthetic mapped to point color. Options:
+\itemize{
+  \item \code{"density"} (default): Shade points by local 2-D density.
+  \item \code{"group"}: Color by the \code{group.by} metadata column.
+  \item \code{"x"}: Apply a continuous gradient based on the x-axis values.
+  \item \code{"y"}: Apply a continuous gradient based on the y-axis values.
+}}
 
-\item{scale}{Logical; if `TRUE` scores are centered/scaled (Z‑score) prior
-to plotting.}
+\item{style}{Character. Plot style. Options:
+\itemize{
+  \item \code{"point"} (default): Density-aware scatter plot.
+  \item \code{"hex"}: Hexagonal binning.
+}}
 
-\item{bins}{Number of hex bins along each axis when `style = "hex"`.}
+\item{scale}{Logical. If \code{TRUE}, scores are centered and scaled
+(Z-score) prior to plotting. Default is \code{FALSE}.}
 
-\item{point.size, alpha}{Aesthetic tweaks for `style = "point"`.}
+\item{bins}{Integer. Number of hex bins along each axis when
+\code{style = "hex"}. Default is \code{40}.}
 
-\item{palette}{Character. Any palette from \code{\link[grDevices]{hcl.pals}}.}
+\item{point.size}{Numeric. Point size for \code{style = "point"}.
+Default is \code{1.2}.}
 
-\item{add.corr}{Logical. Add Pearson and Spearman correlation
-coefficients (top-left corner of the first facet).}
+\item{alpha}{Numeric. Transparency for points or hexbins.
+Default is \code{0.8}.}
+
+\item{palette}{Character. Color palette name from
+\code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.}
+
+\item{add.corr}{Logical. If \code{TRUE}, add Pearson and Spearman
+correlation coefficients to the plot (top-left corner). Default is
+\code{FALSE}.}
 }
 \value{
 A \pkg{ggplot2} object.
 }
 \description{
-Visualize the relationship between *two* enrichment scores at single-cell
-resolution. By default points are shaded by local 2-D density
-(`color.by = "density"`), but users can instead color by a metadata column
-(discrete) or by the raw gene-set scores themselves (continuous).
+Visualize the relationship between two enrichment scores at single-cell
+resolution. By default, points are shaded by local 2-D density
+(\code{color.by = "density"}), but users can instead color by a metadata
+column (discrete) or by the raw gene-set scores themselves (continuous).
 }
 \examples{
 gs <- list(

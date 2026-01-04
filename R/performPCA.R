@@ -1,23 +1,27 @@
 #' Perform Principal Component Analysis on Enrichment Data
-#' 
-#' This function allows users to calculate the principal components 
-#' for the gene set enrichment values. For single-cell data, the PCA
-#' will be stored with the dimensional reductions. If a matrix is used
-#' as input, the output is a list for further plotting. Alternatively,
-#' users can use functions for PCA calculations based on their desired
-#' workflow in lieu of using \code{\link{performPCA}}, but will not be 
-#' compatible with downstream \code{\link{pcaEnrichment}} visualization.
 #'
-#' @param input.data Output of \code{\link{escape.matrix}} or a single‑cell
-#' object previously processed by \code{\link{runEscape}}.
-#' @param assay Name of the assay holding enrichment scores when
-#' `input.data` is a single‑cell object. Ignored otherwise.
-#' @param scale Logical; if `TRUE` standardises each gene-set column
-#' before PCA.
-#' @param n.dim Integer >= 1 or vector; the **largest** value sets the
-#'   number of principal components to compute / keep.
-#' @param reduction.name,reduction.key  Names used when writing back to a
-#'   Seurat / SCE object.
+#' This function allows users to calculate the principal components for the
+#' gene set enrichment values. For single-cell data, the PCA will be stored
+#' with the dimensional reductions. If a matrix is used as input, the output
+#' is a list for further plotting. Alternatively, users can use functions for
+#' PCA calculations based on their desired workflow in lieu of using
+#' \code{\link{performPCA}}, but will not be compatible with downstream
+#' \code{\link{pcaEnrichment}} visualization.
+#'
+#' @param input.data Output of \code{\link{escape.matrix}} or a single-cell
+#'   object previously processed by \code{\link{runEscape}}.
+#' @param assay Character. Name of the assay holding enrichment scores when
+#'   \code{input.data} is a single-cell object. Default is \code{"escape"}.
+#'   Ignored otherwise.
+#' @param scale Logical. If \code{TRUE}, standardizes each gene-set column
+#'   before PCA. Default is \code{TRUE}.
+#' @param n.dim Integer. The number of principal components to compute and
+#'   keep. Default is \code{10}.
+#' @param reduction.name Character. Name used for the dimensional reduction
+#'   slot when writing back to a Seurat/SCE object. Default is
+#'   \code{"escape.PCA"}.
+#' @param reduction.key Character. Key prefix for the dimensional reduction
+#'   when writing back to a Seurat/SCE object. Default is \code{"escPC_"}.
 #'   
 #' @examples
 #' gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
