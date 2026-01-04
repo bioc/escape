@@ -2,7 +2,7 @@
 % Please edit documentation in R/enrichItPlot.R
 \name{enrichItPlot}
 \alias{enrichItPlot}
-\title{Adaptive visualisation of enrichIt results}
+\title{Adaptive Visualisation of enrichIt Results}
 \usage{
 enrichItPlot(
   res,
@@ -16,31 +16,40 @@ enrichItPlot(
 )
 }
 \arguments{
-\item{res}{`data.frame` returned by [enrichIt()].}
+\item{res}{Data frame. Output from \code{\link{enrichIt}}.}
 
-\item{plot.type}{`"bar"`, `"dot"`, or `"cnet"`.}
+\item{plot.type}{Character. Visualization type. Options:
+\itemize{
+  \item \code{"bar"} (default): Horizontal bar plot.
+  \item \code{"dot"}: Dot plot with size and color encoding.
+  \item \code{"cnet"}: Concept network plot showing gene-pathway
+    relationships.
+}}
 
-\item{top}{Integer. Keep the top *n* terms **per database**
-(ranked by adjusted *p*). Set to `Inf` to keep all.}
+\item{top}{Integer. Keep the top \emph{n} terms \strong{per database}
+(ranked by adjusted p-value). Set to \code{Inf} to keep all. Default is
+\code{20}.}
 
-\item{x.measure}{A column in `res` mapped to the *x*-axis
-(ignored for `"cnet"`). Default `"-log10(padj)"`.}
+\item{x.measure}{Character. Column in \code{res} mapped to the x-axis
+(ignored for \code{"cnet"}). Default is \code{"-log10(padj)"}.}
 
-\item{color.measure}{Column mapped to color (dot plot only).
-Default same as `x.measure`.}
+\item{color.measure}{Character. Column mapped to color (dot plot only).
+Default is same as \code{x.measure}.}
 
-\item{show.counts}{Logical. Annotate bar plot with the `Count` (number of genes).}
+\item{show.counts}{Logical. If \code{TRUE}, annotate bar plot with the
+\code{Count} (number of genes). Default is \code{TRUE}.}
 
-\item{palette}{palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.}
+\item{palette}{Character. Color palette name from
+\code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.}
 
-\item{...}{Further arguments passed to **ggplot2** geoms (e.g. 
-`alpha`, `linewidth`).}
+\item{...}{Further arguments passed to \pkg{ggplot2} geoms (e.g.,
+\code{alpha}, \code{linewidth}).}
 }
 \value{
-A **patchwork** object (bar / dot) or **ggraph** object (cnet).
+A \pkg{ggplot2} object (bar/dot) or \pkg{ggraph} object (cnet).
 }
 \description{
-Adaptive visualisation of enrichIt results
+Create bar, dot, or network plots from \code{\link{enrichIt}} results.
 }
 \examples{
 \dontrun{

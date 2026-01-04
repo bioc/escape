@@ -20,42 +20,60 @@ enrichIt(
 )
 }
 \arguments{
-\item{input.data}{Either
-• a named numeric vector **already ranked**, *or*  
-• a data.frame/tibble with one row per gene and columns containing
-  log-fold-change and *p*-value. If the gene ID is not in `rownames(data)`,
-  supply `gene_col`.}
+\item{input.data}{Either:
+\itemize{
+  \item A named numeric vector \strong{already ranked}, or
+  \item A data.frame/tibble with one row per gene and columns containing
+    log-fold-change and p-value. If the gene ID is not in
+    \code{rownames(data)}, supply \code{gene_col}.
+}}
 
-\item{gene.sets}{AA named list of character vectors, the result of
-[getGeneSets()], or the built-in data object [escape.gene.sets].}
+\item{gene.sets}{A named list of character vectors, the result of
+\code{\link{getGeneSets}}, or the built-in data object
+\code{\link{escape.gene.sets}}.}
 
-\item{gene_col}{Name of the column holding gene identifiers (ignored when 
-they are row-names). Default `NULL`.}
+\item{gene_col}{Character or \code{NULL}. Name of the column holding gene
+identifiers (ignored when they are row-names). Default is \code{NULL}.}
 
-\item{logFC_col, pval_col}{Column names for logFC and *p* (or adj.*p*)
-– defaults match Seurat’s `FindMarkers()`.}
+\item{logFC_col}{Character. Column name for log-fold-change values. Default
+is \code{"avg_log2FC"} (matches Seurat's \code{FindMarkers()}).}
 
-\item{ranking_fun}{How to build the ranking: `"signed_log10_p"` (default) 
-or `"logFC"`.}
+\item{pval_col}{Character. Column name for p-values (or adjusted p-values).
+Default is \code{c("p_val_adj", "p_val")} (first match is used).}
 
-\item{pval_cutoff, logFC_cutoff}{Filters applied **before** ranking.}
+\item{ranking_fun}{Character. How to build the ranking:
+\itemize{
+  \item \code{"signed_log10_p"} (default): sign(logFC) * -log10(p).
+  \item \code{"logFC"}: Use log-fold-change values directly.
+}}
 
-\item{minSize, maxSize}{Integer. Minimum / maximum pathway size passed to
-*fgsea* (default 5 / 500).}
+\item{pval_cutoff}{Numeric. Filter genes with p-value above this threshold
+\strong{before} ranking. Default is \code{1} (no filtering).}
 
-\item{padjust_method}{Multiple-testing correction; any method accepted by
-[stats::p.adjust()] (default `"BH"`).}
+\item{logFC_cutoff}{Numeric. Filter genes with absolute log-fold-change
+below this threshold \strong{before} ranking. Default is \code{0} (no
+filtering).}
 
-\item{nproc}{Passed to **fgsea** (`0` = multithread if OpenMP available).}
+\item{minSize}{Integer. Minimum pathway size passed to \pkg{fgsea}. Default
+is \code{5}.}
+
+\item{maxSize}{Integer. Maximum pathway size passed to \pkg{fgsea}. Default
+is \code{500}.}
+
+\item{padjust_method}{Character. Multiple-testing correction method; any
+method accepted by \code{\link[stats]{p.adjust}}. Default is \code{"BH"}.}
+
+\item{nproc}{Integer. Passed to \pkg{fgsea}. Use \code{0} for multithread
+if OpenMP is available. Default is \code{0}.}
 }
 \value{
 `data.frame` with the usual fgsea columns plus a convenient
 `leadingEdge` character column collapsed with \";\".
 }
 \description{
-A convenience front-end to **fgsea** that lets you point at the
-`avg_log2FC` and `p_val_adj` columns coming out of Seurat / DESeq2 /
-edgeR etc. It converts them to a signed -log10(*p*) ranking, filters on
+A convenience front-end to \pkg{fgsea} that lets you point at the
+\code{avg_log2FC} and \code{p_val_adj} columns coming out of Seurat / DESeq2
+/ edgeR etc. It converts them to a signed -log10(p) ranking, filters on
 significance / effect size, and then runs fgsea.
 }
 \examples{
@@ -74,5 +92,6 @@ gsea <- enrichIt(markers,
 
 }
 \seealso{
-[fgsea::fgsea()], [getGeneSets()], [gseaEnrichment()]
+\code{\link[fgsea]{fgsea}}, \code{\link{getGeneSets}},
+  \code{\link{gseaEnrichment}}
 }

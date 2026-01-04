@@ -18,39 +18,45 @@ heatmapEnrichment(
 )
 }
 \arguments{
-\item{input.data}{Output of \code{\link{escape.matrix}} or a single‑cell
+\item{input.data}{Output of \code{\link{escape.matrix}} or a single-cell
 object previously processed by \code{\link{runEscape}}.}
 
-\item{assay}{Name of the assay holding enrichment scores when
-`input.data` is a single‑cell object. Ignored otherwise.}
+\item{assay}{Character. Name of the assay holding enrichment scores when
+\code{input.data} is a single-cell object. Ignored otherwise.}
 
-\item{group.by}{Metadata column plotted on the *x*‑axis.  Defaults to the
-Seurat/SCE `ident` slot when `NULL`.}
+\item{group.by}{Character. Metadata column plotted on the x-axis. Defaults
+to the Seurat/SCE \code{ident} slot when \code{NULL}.}
 
-\item{gene.set.use}{Vector of gene‑set names to plot, or \code{"all"}
-(default) to show every available gene set.}
+\item{gene.set.use}{Character vector or \code{"all"}. Gene-set names to
+plot. Use \code{"all"} (default) to show every available gene set.}
 
-\item{cluster.rows, cluster.columns}{Logical; if \code{TRUE}, rows/columns
-are ordered by Ward‑linkage hierarchical clustering (Euclidean distance).}
+\item{cluster.rows}{Logical. If \code{TRUE}, rows are ordered by Ward-linkage
+hierarchical clustering (Euclidean distance). Default is \code{FALSE}.}
 
-\item{facet.by}{Optional metadata column used to facet the plot.}
+\item{cluster.columns}{Logical. If \code{TRUE}, columns are ordered by
+Ward-linkage hierarchical clustering (Euclidean distance). Default is
+\code{FALSE}.}
 
-\item{scale}{If \code{TRUE}, Z‑transforms each gene‑set column **after**
-summarization.}
+\item{facet.by}{Character or \code{NULL}. Metadata column used to facet
+the plot.}
 
-\item{summary.stat}{Optional method used to summarize expression within each
-group. One of: \code{"mean"} (default), \code{"median"}, \code{"max"}, 
-\code{"sum"}, or \code{"geometric"}.}
+\item{scale}{Logical. If \code{TRUE}, Z-transforms each gene-set column
+\strong{after} summarization. Default is \code{FALSE}.}
 
-\item{palette}{Character. Any palette from \code{\link[grDevices]{hcl.pals}}.}
+\item{summary.stat}{Character. Method used to summarize expression within
+each group. One of: \code{"mean"} (default), \code{"median"},
+\code{"max"}, \code{"sum"}, or \code{"geometric"}.}
+
+\item{palette}{Character. Color palette name from
+\code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.}
 }
 \value{
 A \code{ggplot2} object.
 }
 \description{
-This function allows to the user to examine the heatmap with the mean
-enrichment values by group. The heatmap will have the gene sets as rows
-and columns will be the grouping variable.
+This function allows the user to examine a heatmap with the mean enrichment
+values by group. The heatmap displays gene sets as rows and the grouping
+variable as columns.
 }
 \examples{
 gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),

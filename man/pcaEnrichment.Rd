@@ -18,29 +18,47 @@ pcaEnrichment(
 )
 }
 \arguments{
-\item{input.data}{Single‑cell object (Seurat / SCE) **or** the raw list
-returned by [`performPCA()`].}
+\item{input.data}{Single-cell object (Seurat / SCE) \strong{or} the raw list
+returned by \code{\link{performPCA}}.}
 
-\item{dimRed}{Name of the dimensional‑reduction slot to pull from a
-single‑cell object. Ignored when `input.data` is the list output.}
+\item{dimRed}{Character. Name of the dimensional-reduction slot to pull from
+a single-cell object. Ignored when \code{input.data} is the list output.}
 
-\item{x.axis, y.axis}{Character vectors naming the PCs to display (e.g. "PC1").}
+\item{x.axis}{Character. Name of the principal component to display on the
+x-axis (e.g., \code{"PC1"}). Default is \code{"PC1"}.}
 
-\item{facet.by}{Metadata column to facet plot.}
+\item{y.axis}{Character. Name of the principal component to display on the
+y-axis (e.g., \code{"PC2"}). Default is \code{"PC2"}.}
 
-\item{style}{"point" (default) or "hex".}
+\item{facet.by}{Character or \code{NULL}. Metadata column used to facet
+the plot.}
 
-\item{add.percent.contribution}{Include percent variance explained in axis 
-labels.}
+\item{style}{Character. Plot style. Options:
+\itemize{
+  \item \code{"point"} (default): Density-aware scatter plot.
+  \item \code{"hex"}: Hexagonal binning.
+}}
 
-\item{display.factors}{Draw arrows for the top gene‑set loadings.}
+\item{add.percent.contribution}{Logical. If \code{TRUE}, include percent
+variance explained in axis labels. Default is \code{TRUE}.}
 
-\item{number.of.factors}{Integer; how many loadings to display if
-`display.factors = TRUE`.}
+\item{display.factors}{Logical. If \code{TRUE}, draw arrows for the top
+gene-set loadings. Default is \code{FALSE}.}
 
-\item{palette}{Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
+\item{number.of.factors}{Integer. Number of loadings to display when
+\code{display.factors = TRUE}. Default is \code{10}.}
 
-#' @examples 
+\item{palette}{Character. Color palette name from
+\code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.}
+}
+\value{
+A **ggplot2** object.
+}
+\description{
+This function allows the user to examine the distribution of principal
+components computed on the enrichment values.
+}
+\examples{
 GS <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
            Tcells = c("CD3E", "CD3D", "CD3G", "CD7","CD8A"))
 pbmc_small <- SeuratObject::pbmc_small
@@ -54,12 +72,6 @@ pbmc_small <- performPCA(pbmc_small,
 pcaEnrichment(pbmc_small,
               x.axis = "PC1",
               y.axis = "PC2",
-              dimRed = "escape.PCA")}
-}
-\value{
-A **ggplot2** object.
-}
-\description{
-This function allows to the user to examine the distribution
-of principal components run on the enrichment values.
+              dimRed = "escape.PCA")
+
 }

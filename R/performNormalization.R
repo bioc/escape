@@ -1,28 +1,31 @@
 #' Perform Normalization on Enrichment Data
-#' 
-#' @description
-#' Scales each enrichment value by the **number of genes from the set that are
-#' expressed** in that cell (non‑zero counts). Optionally shifts results into a
-#' positive range and/or applies a natural‑log transform for compatibility with
-#' log‑based differential tests.
 #'
-#' @param input.data raw‐counts matrix (`genes × cells`), a 
-#' \link[SeuratObject]{Seurat} object, or a 
-#' \link[SingleCellExperiment]{SingleCellExperiment}. Gene identifiers must
-#' match those in `gene.sets`.
-#' @param enrichment.data Output of \code{\link{escape.matrix}} or a single‑cell
-#' object previously processed by \code{\link{runEscape}}.
-#' @param assay Name of the assay holding enrichment scores when
-#' `input.data` is a single‑cell object. Ignored otherwise.
+#' Scales each enrichment value by the \strong{number of genes from the set
+#' that are expressed} in that cell (non-zero counts). Optionally shifts
+#' results into a positive range and/or applies a natural-log transform for
+#' compatibility with log-based differential tests.
+#'
+#' @param input.data A raw-counts matrix (genes x cells), a
+#'   \link[SeuratObject]{Seurat} object, or a
+#'   \link[SingleCellExperiment]{SingleCellExperiment}. Gene identifiers must
+#'   match those in \code{gene.sets}.
+#' @param enrichment.data Matrix. Output of \code{\link{escape.matrix}} or
+#'   \code{NULL} if enrichment scores are already stored in \code{input.data}.
+#' @param assay Character. Name of the assay holding enrichment scores when
+#'   \code{input.data} is a single-cell object. Default is \code{"escape"}.
+#'   Ignored otherwise.
 #' @param gene.sets A named list of character vectors, the result of
-#' [getGeneSets()], or the built-in data object [escape.gene.sets]. 
-#' List names become column names in the result.
-#' @param make.positive Logical; if `TRUE` shifts each column so its minimum is
-#' zero.
-#' @param scale.factor Optional numeric vector overriding gene‑count scaling
-#' (length = #cells). Use when you want external per‑cell normalization factors.
-#' @param groups Integer >= 1.  Number of cells per processing chunk.
-#' Larger values reduce overhead but increase memory usage. Default **1000**.
+#'   \code{\link{getGeneSets}}, or the built-in data object
+#'   \code{\link{escape.gene.sets}}. List names must match column names in the
+#'   enrichment matrix.
+#' @param make.positive Logical. If \code{TRUE}, shifts each column so its
+#'   minimum is zero. Default is \code{FALSE}.
+#' @param scale.factor Numeric vector or \code{NULL}. Optional per-cell scaling
+#'   factors (length = number of cells). Use when you want external per-cell
+#'   normalization factors. Default is \code{NULL} (compute from gene counts).
+#' @param groups Integer or \code{NULL}. Number of cells per processing chunk.
+#'   Larger values reduce overhead but increase memory usage. Default is
+#'   \code{NULL} (process all cells at once).
 #'
 #' @examples 
 #' gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
@@ -81,7 +84,7 @@ performNormalization <- function(input.data,
     egc <- egc[names(egc) %in% colnames(enriched)]
     if (!length(egc)) stop("None of the supplied gene sets match enrichment columns.")
     
-    ## counts matrix (genes × cells) – drop after use to save RAM
+    ## counts matrix (genes x cells) - drop after use to save RAM
     cnts <- .cntEval(input.data, assay = "RNA", type = "counts")
     message("Computing expressed-gene counts per cell...")
     scale.mat <- do.call(cbind, lapply(egc, function(gs) {

@@ -19,67 +19,70 @@ escape.matrix(
 )
 }
 \arguments{
-\item{input.data}{A raw‐counts matrix (`genes × cells`), a
+\item{input.data}{A raw-counts matrix (genes x cells), a
 \link[SeuratObject]{Seurat} object, or a
 \link[SingleCellExperiment]{SingleCellExperiment}. Gene identifiers must
-match those in `gene.sets`.}
+match those in \code{gene.sets}.}
 
 \item{gene.sets}{A named list of character vectors, the result of
-[getGeneSets()], or the built-in data object [escape.gene.sets]. 
-List names become column names in the result.}
+\code{\link{getGeneSets}}, or the built-in data object
+\code{\link{escape.gene.sets}}. List names become column names in the
+result.}
 
-\item{method}{Scoring algorithm (case-insensitive). One of `"GSVA"`, 
-`"ssGSEA"`, `"UCell"`, or `"AUCell"`. Default **`"ssGSEA"`**.}
+\item{method}{Character. Scoring algorithm (case-insensitive). One of
+\code{"GSVA"}, \code{"ssGSEA"}, \code{"UCell"}, or \code{"AUCell"}.
+Default is \code{"ssGSEA"}.}
 
-\item{groups}{Integer >= 1. Number of cells per processing chunk.
-Larger values reduce overhead but increase memory usage.  Default **1000**.}
+\item{groups}{Integer. Number of cells per processing chunk. Larger values
+reduce overhead but increase memory usage. Default is \code{1000}.}
 
-\item{min.size}{Minimum number of genes from a set that must be detected
-in the expression matrix for that set to be scored.  Default **5**.
-Use `NULL` to disable filtering.}
+\item{min.size}{Integer or \code{NULL}. Minimum number of genes from a set
+that must be detected in the expression matrix for that set to be scored.
+Default is \code{5}. Use \code{NULL} to disable filtering.}
 
-\item{normalize}{Logical. If `TRUE`, the score matrix is passed to
-[performNormalization()] (drop-out scaling and optional log transform).
-Default **FALSE**.}
+\item{normalize}{Logical. If \code{TRUE}, the score matrix is passed to
+\code{\link{performNormalization}} (drop-out scaling and optional log
+transform). Default is \code{FALSE}.}
 
-\item{make.positive}{Logical. If `TRUE` *and* `normalize = TRUE`, shifts
-every gene-set column so its global minimum is zero, facilitating
-downstream log-ratio analyses.  Default **FALSE**.}
+\item{make.positive}{Logical. If \code{TRUE} \emph{and}
+\code{normalize = TRUE}, shifts every gene-set column so its global
+minimum is zero, facilitating downstream log-ratio analyses. Default is
+\code{FALSE}.}
 
-\item{min.expr.cells}{Numeric. Gene-expression filter threshold (see
-details above). Default **0** (no gene filtering).}
+\item{min.expr.cells}{Numeric. Gene-expression filter threshold. Default is
+\code{0} (no gene filtering).}
 
-\item{min.filter.by}{Character or `NULL`.  Column name in `meta.data`
-(Seurat) or `colData` (SCE) defining groups within which the
-`min.expr.cells` rule is applied.  Default **`NULL`**.}
+\item{min.filter.by}{Character or \code{NULL}. Column name in
+\code{meta.data} (Seurat) or \code{colData} (SCE) defining groups within
+which the \code{min.expr.cells} rule is applied. Default is \code{NULL}.}
 
 \item{BPPARAM}{A \pkg{BiocParallel} parameter object describing the
-parallel backend.}
+parallel backend. Default is \code{NULL} (serial execution).}
 
-\item{...}{Extra arguments passed verbatim to the chosen back-end
-scoring function (`gsva()`, `ScoreSignatures_UCell()`, or
-`AUCell_calcAUC()`).}
+\item{...}{Extra arguments passed verbatim to the chosen back-end scoring
+function (\code{gsva()}, \code{ScoreSignatures_UCell()}, or
+\code{AUCell_calcAUC()}).}
 }
 \value{
 A numeric matrix with one row per cell and one column per gene set,
-ordered as in `gene.sets`.
+  ordered as in \code{gene.sets}.
 }
 \description{
-`escape.matrix()` computes per-cell enrichment for arbitrary gene-set
+\code{escape.matrix()} computes per-cell enrichment for arbitrary gene-set
 collections using one of four scoring back-ends and returns a dense numeric
-matrix (cells × gene-sets).  The expression matrix is processed in
-user-defined *chunks* (`groups`) so that memory use remains predictable;
-each chunk is dispatched in parallel via a \pkg{BiocParallel} `BPPARAM`
-backend.  Heavy engines (\pkg{GSVA}, \pkg{UCell}, \pkg{AUCell}) are loaded
-lazily, keeping them in the package’s \strong{Suggests} field.
+matrix (cells x gene-sets). The expression matrix is processed in
+user-defined chunks (\code{groups}) so that memory use remains predictable;
+each chunk is dispatched in parallel via a \pkg{BiocParallel} \code{BPPARAM}
+backend. Heavy engines (\pkg{GSVA}, \pkg{UCell}, \pkg{AUCell}) are loaded
+lazily, keeping them in the package's \strong{Suggests} field.
 }
 \section{Supported methods}{
 
 \describe{
-  \item{`"GSVA"`}{Gene-set variation analysis (Poisson kernel).}
-  \item{`"ssGSEA"`}{Single-sample GSEA.}
-  \item{`"UCell"`}{Rank-based UCell scoring.}
-  \item{`"AUCell"`}{Area-under-the-curve ranking score.}
+  \item{\code{"GSVA"}}{Gene-set variation analysis (Poisson kernel).}
+  \item{\code{"ssGSEA"}}{Single-sample GSEA.}
+  \item{\code{"UCell"}}{Rank-based UCell scoring.}
+  \item{\code{"AUCell"}}{Area-under-the-curve ranking score.}
 }
 }
 
@@ -96,9 +99,9 @@ es   <- escape.matrix(pbmc,
 
 }
 \seealso{
-[runEscape()] to attach scores to a single-cell object;
-[getGeneSets()] for MSigDB retrieval; [performNormalization()] for the
-optional normalization workflow.
+\code{\link{runEscape}} to attach scores to a single-cell object;
+  \code{\link{getGeneSets}} for MSigDB retrieval;
+  \code{\link{performNormalization}} for the optional normalization workflow.
 }
 \author{
 Nick Borcherding, Jared Andrews

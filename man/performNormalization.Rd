@@ -15,39 +15,43 @@ performNormalization(
 )
 }
 \arguments{
-\item{input.data}{raw‐counts matrix (`genes × cells`), a 
-\link[SeuratObject]{Seurat} object, or a 
+\item{input.data}{A raw-counts matrix (genes x cells), a
+\link[SeuratObject]{Seurat} object, or a
 \link[SingleCellExperiment]{SingleCellExperiment}. Gene identifiers must
-match those in `gene.sets`.}
+match those in \code{gene.sets}.}
 
-\item{enrichment.data}{Output of \code{\link{escape.matrix}} or a single‑cell
-object previously processed by \code{\link{runEscape}}.}
+\item{enrichment.data}{Matrix. Output of \code{\link{escape.matrix}} or
+\code{NULL} if enrichment scores are already stored in \code{input.data}.}
 
-\item{assay}{Name of the assay holding enrichment scores when
-`input.data` is a single‑cell object. Ignored otherwise.}
+\item{assay}{Character. Name of the assay holding enrichment scores when
+\code{input.data} is a single-cell object. Default is \code{"escape"}.
+Ignored otherwise.}
 
 \item{gene.sets}{A named list of character vectors, the result of
-[getGeneSets()], or the built-in data object [escape.gene.sets]. 
-List names become column names in the result.}
+\code{\link{getGeneSets}}, or the built-in data object
+\code{\link{escape.gene.sets}}. List names must match column names in the
+enrichment matrix.}
 
-\item{make.positive}{Logical; if `TRUE` shifts each column so its minimum is
-zero.}
+\item{make.positive}{Logical. If \code{TRUE}, shifts each column so its
+minimum is zero. Default is \code{FALSE}.}
 
-\item{scale.factor}{Optional numeric vector overriding gene‑count scaling
-(length = #cells). Use when you want external per‑cell normalization factors.}
+\item{scale.factor}{Numeric vector or \code{NULL}. Optional per-cell scaling
+factors (length = number of cells). Use when you want external per-cell
+normalization factors. Default is \code{NULL} (compute from gene counts).}
 
-\item{groups}{Integer >= 1.  Number of cells per processing chunk.
-Larger values reduce overhead but increase memory usage. Default **1000**.}
+\item{groups}{Integer or \code{NULL}. Number of cells per processing chunk.
+Larger values reduce overhead but increase memory usage. Default is
+\code{NULL} (process all cells at once).}
 }
 \value{
 If `input.data` is an object, the same object with a new assay
         "<assay>_normalized". Otherwise a matrix of normalized scores.
 }
 \description{
-Scales each enrichment value by the **number of genes from the set that are
-expressed** in that cell (non‑zero counts). Optionally shifts results into a
-positive range and/or applies a natural‑log transform for compatibility with
-log‑based differential tests.
+Scales each enrichment value by the \strong{number of genes from the set
+that are expressed} in that cell (non-zero counts). Optionally shifts
+results into a positive range and/or applies a natural-log transform for
+compatibility with log-based differential tests.
 }
 \examples{
 gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),

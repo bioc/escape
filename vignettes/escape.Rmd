@@ -332,54 +332,54 @@ heatmapEnrichment(sce.pbmc,
 We can also focus on individual gene sets - one approach is to use ```geyserEnrichment()```. Here individual cells are plotted along the Y-axis with graphical summary where the central dot refers to the median enrichment value and the thicker/thinner lines demonstrate the interval summaries referring to the 66% and 95%.
 
 ```{r tidy=FALSE}
-geyserEnrichment(pbmc_small, 
+geyserEnrichment(pbmc_small,
                  assay = "escape.ssGSEA",
-                 gene.set = "T1-Interferon")
+                 gene.set.use = "T1-Interferon")
 ```
 
 To show the additional parameters that appear in visualizations of individual enrichment gene sets - we can reorder the groups by the mean of the gene set using **order.by** = "mean".
 
 ```{r tidy=FALSE}
-geyserEnrichment(pbmc_small, 
+geyserEnrichment(pbmc_small,
                  assay = "escape.ssGSEA",
-                 gene.set = "T1-Interferon", 
+                 gene.set.use = "T1-Interferon",
                  order.by = "mean")
 ```
 
-What if we had 2 separate samples or groups within the data? Another parameter we can use is **facet.by** to allow for direct visualization of an additional variable. 
+What if we had 2 separate samples or groups within the data? Another parameter we can use is **facet.by** to allow for direct visualization of an additional variable.
 
 ```{r tidy=FALSE}
-geyserEnrichment(pbmc_small, 
+geyserEnrichment(pbmc_small,
                  assay = "escape.ssGSEA",
-                 gene.set = "T1-Interferon", 
+                 gene.set.use = "T1-Interferon",
                  facet.by = "groups")
 ```
 
 Lastly, we can select the way the color is applied to the plot using the **color.by** parameter. Here we can set it to the gene set of interest *"HALLMARK-INTERFERON-GAMMA-RESPONSE"*.
 
 ```{r tidy=FALSE}
-geyserEnrichment(pbmc_small, 
+geyserEnrichment(pbmc_small,
                  assay = "escape.ssGSEA",
-                 gene.set = "T1-Interferon", 
+                 gene.set.use = "T1-Interferon",
                  color.by  = "T1-Interferon")
 ```
 
 ## ridgeEnrichment
 
-Similar to the ```geyserEnrichment()``` the ```ridgeEnrichment()``` can display the distribution of enrichment values across the selected gene set. The central line is at the median value for the respective grouping. 
+Similar to the ```geyserEnrichment()``` the ```ridgeEnrichment()``` can display the distribution of enrichment values across the selected gene set. The central line is at the median value for the respective grouping.
 
 ```{r tidy=FALSE}
-ridgeEnrichment(sce.pbmc, 
+ridgeEnrichment(sce.pbmc,
                 assay = "escape.UCell",
-                gene.set = "T2_Interferon")
+                gene.set.use = "T2_Interferon")
 ```
 
 We can get the relative position of individual cells along the x-axis using the **add.rug** parameter.
 
 ```{r tidy=FALSE}
-ridgeEnrichment(sce.pbmc, 
+ridgeEnrichment(sce.pbmc,
                 assay = "escape.UCell",
-                gene.set = "T2_Interferon",
+                gene.set.use = "T2_Interferon",
                 add.rug = TRUE,
                 scale = TRUE)
 ```
@@ -389,19 +389,19 @@ ridgeEnrichment(sce.pbmc,
 Another distribution visualization is a violin plot, which we separate and directly compare using a binary classification. Like ```ridgeEnrichment()```, this allows for greater use of categorical variables. For ```splitEnrichment()```, the output will be two halves of a violin plot based on the **split.by** parameter with a central boxplot with the relative distribution across all samples.
 
 ```{r tidy=FALSE}
-splitEnrichment(pbmc_small, 
+splitEnrichment(pbmc_small,
                 assay = "escape.ssGSEA",
-                gene.set = "Lipid-mediators", 
+                gene.set.use = "Lipid-mediators",
                 split.by = "groups")
 ```
 
 If selecting a **split.by** variable with more than 2 levels, ```splitEnrichment()``` will convert the violin plots to dodge.
 
 ```{r tidy=FALSE}
-splitEnrichment(pbmc_small, 
+splitEnrichment(pbmc_small,
                 assay = "escape.ssGSEA",
-                gene.set = "Lipid-mediators", 
-                split.by = "ident", 
+                gene.set.use = "Lipid-mediators",
+                split.by = "ident",
                 group.by = "groups")
 ```
 

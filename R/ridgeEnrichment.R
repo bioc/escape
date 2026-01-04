@@ -1,29 +1,37 @@
 #' Visualize Enrichment Distributions Using Ridge Plots
-#' 
-#' This function allows to the user to examine the distribution of 
+#'
+#' This function allows the user to examine the distribution of
 #' enrichment across groups by generating a ridge plot.
 #'
-#' @param input.data Output of \code{\link{escape.matrix}} or a single‑cell
-#' object previously processed by \code{\link{runEscape}}.
-#' @param gene.set.use Character(1).  Name of the gene set to display.
-#' @param assay Name of the assay holding enrichment scores when
-#' `input.data` is a single‑cell object. Ignored otherwise.
-#' @param group.by Metadata column plotted on the *y*‑axis.  Defaults to the
-#' Seurat/SCE `ident` slot when `NULL`.
-#'@param color.by Aesthetic mapped to point color. Use either
-#' *"group"* (default = `group.by`) for categorical coloring or the
-#' *name of a gene‑set* (e.g. same as `gene.set`) to obtain a numeric
-#  gradient. Any other metadata or column present in the data is also
-#' accepted.
-#' @param order.by How to arrange the x‑axis:
-#'   *`"mean"`* – groups ordered by decreasing group mean;
-#'   *`"group"`* – natural sort of group labels;
-#'   *`NULL`* – keep original ordering.
-#' @param facet.by Optional metadata column used to facet the plot.
-#' @param scale Logical; if `TRUE` scores are centred/scaled (Z‑score) prior
-#' to plotting.
-#' @param add.rug Logical. Draw per-cell tick marks underneath each ridge.
-#' @param palette Character. Any palette from \code{\link[grDevices]{hcl.pals}}.
+#' @param input.data Output of \code{\link{escape.matrix}} or a single-cell
+#'   object previously processed by \code{\link{runEscape}}.
+#' @param gene.set.use Character. Name of the gene set to display.
+#' @param assay Character. Name of the assay holding enrichment scores when
+#'   \code{input.data} is a single-cell object. Ignored otherwise.
+#' @param group.by Character. Metadata column plotted on the y-axis. Defaults
+#'   to the Seurat/SCE \code{ident} slot when \code{NULL}.
+#' @param color.by Character. Aesthetic mapped to fill color. Options:
+#'   \itemize{
+#'     \item \code{"group"} (default): Uses \code{group.by} for categorical
+#'       coloring.
+#'     \item \emph{gene-set name}: Use the same value as \code{gene.set.use}
+#'       to obtain a numeric gradient.
+#'     \item Any other metadata column present in the data.
+#'   }
+#' @param order.by Character or \code{NULL}. How to arrange the y-axis:
+#'   \itemize{
+#'     \item \code{"mean"}: Groups ordered by decreasing group mean.
+#'     \item \code{"group"}: Natural (alphanumeric) sort of group labels.
+#'     \item \code{NULL} (default): Keep original ordering.
+#'   }
+#' @param facet.by Character or \code{NULL}. Metadata column used to facet
+#'   the plot.
+#' @param scale Logical. If \code{TRUE}, scores are centered and scaled
+#'   (Z-score) prior to plotting. Default is \code{FALSE}.
+#' @param add.rug Logical. If \code{TRUE}, draw per-cell tick marks underneath
+#'   each ridge. Default is \code{FALSE}.
+#' @param palette Character. Color palette name from
+#'   \code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.
 #'
 #' @examples
 #' gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
@@ -121,7 +129,7 @@ ridgeEnrichment <- function(input.data,
   p <- p +
     ylab(group.by) +
     xlab(paste0(gene.set.use, "\nEnrichment Score")) +
-    ggplot2::theme_classic(base_size = 11)
+    .themeEscape(grid_lines = "none")
   
   p <- .colorby(df, p, color.by, palette, type = "fill") + 
     guides(fill = "none")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getGeneSets.R
 \name{getGeneSets}
 \alias{getGeneSets}
-\title{Get a collection of gene sets from the msigdb}
+\title{Get a Collection of Gene Sets from MSigDB}
 \usage{
 getGeneSets(
   species = c("Homo sapiens", "Mus musculus"),
@@ -14,38 +14,41 @@ getGeneSets(
 )
 }
 \arguments{
-\item{species}{`"Homo sapiens"` (default) or `"Mus musculus"`.}
+\item{species}{Character. Species name. Either \code{"Homo sapiens"}
+(default) or \code{"Mus musculus"}.}
 
-\item{library}{Character. Optional vector of main collection codes 
-(e.g. `"H"`, `"C5"`).}
+\item{library}{Character or \code{NULL}. Vector of main collection codes
+(e.g., \code{"H"}, \code{"C5"}). Default is \code{NULL} (all collections).}
 
-\item{subcategory}{Character. Optional vector of sub-collection codes 
-(e.g. `"GO:BP"`).}
+\item{subcategory}{Character or \code{NULL}. Vector of sub-collection codes
+(e.g., \code{"GO:BP"}). Default is \code{NULL} (all subcategories).}
 
-\item{gene.sets}{Character. Optional vector of specific gene-set names.}
+\item{gene.sets}{Character or \code{NULL}. Vector of specific gene-set
+names. Default is \code{NULL} (all gene sets).}
 
-\item{version}{MSigDB version (character, default `"7.4"`).}
+\item{version}{Character. MSigDB version. Default is \code{"7.4"}.}
 
-\item{id}{Identifier type (default `"SYM"` for symbols).}
+\item{id}{Character. Identifier type. Default is \code{"SYM"} (gene
+symbols).}
 }
 \value{
-A named `list` of character vectors (gene IDs).
+A named list of character vectors (gene IDs).
 }
 \description{
-This function retrieves gene sets from msigdb and caches the downloaded object 
-for future calls. It allows subsetting by main collection (library), 
-subcollection, or specific gene sets, and only supports human 
-("Homo sapiens") and mouse ("Mus musculus").
+This function retrieves gene sets from MSigDB and caches the downloaded
+object for future calls. It allows subsetting by main collection (library),
+subcollection, or specific gene sets, and only supports human
+(\code{"Homo sapiens"}) and mouse (\code{"Mus musculus"}).
 }
 \examples{
 \dontrun{
 # Get all hallmark gene sets from human.
-gs <- getGeneSets(species = "Homo sapiens", 
+gs <- getGeneSets(species = "Homo sapiens",
                   library = "H")
 
 # Get a subset based on main collection and subcollection.
-gs <- getGeneSets(species = "Homo sapiens", 
-                  library = c("C2", "C5"), 
+gs <- getGeneSets(species = "Homo sapiens",
+                  library = c("C2", "C5"),
                   subcategory = "GO:BP")
 }
 

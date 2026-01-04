@@ -14,20 +14,25 @@ performPCA(
 )
 }
 \arguments{
-\item{input.data}{Output of \code{\link{escape.matrix}} or a single‑cell
+\item{input.data}{Output of \code{\link{escape.matrix}} or a single-cell
 object previously processed by \code{\link{runEscape}}.}
 
-\item{assay}{Name of the assay holding enrichment scores when
-`input.data` is a single‑cell object. Ignored otherwise.}
+\item{assay}{Character. Name of the assay holding enrichment scores when
+\code{input.data} is a single-cell object. Default is \code{"escape"}.
+Ignored otherwise.}
 
-\item{scale}{Logical; if `TRUE` standardises each gene-set column
-before PCA.}
+\item{scale}{Logical. If \code{TRUE}, standardizes each gene-set column
+before PCA. Default is \code{TRUE}.}
 
-\item{n.dim}{Integer >= 1 or vector; the **largest** value sets the
-number of principal components to compute / keep.}
+\item{n.dim}{Integer. The number of principal components to compute and
+keep. Default is \code{10}.}
 
-\item{reduction.name, reduction.key}{Names used when writing back to a
-Seurat / SCE object.}
+\item{reduction.name}{Character. Name used for the dimensional reduction
+slot when writing back to a Seurat/SCE object. Default is
+\code{"escape.PCA"}.}
+
+\item{reduction.key}{Character. Key prefix for the dimensional reduction
+when writing back to a Seurat/SCE object. Default is \code{"escPC_"}.}
 }
 \value{
 *If* `input.data` is a single-cell object, the same object with a
@@ -35,13 +40,13 @@ Seurat / SCE object.}
   `PCA`, `eigen_values`, `contribution`, and `rotation`.
 }
 \description{
-This function allows users to calculate the principal components 
-for the gene set enrichment values. For single-cell data, the PCA
-will be stored with the dimensional reductions. If a matrix is used
-as input, the output is a list for further plotting. Alternatively,
-users can use functions for PCA calculations based on their desired
-workflow in lieu of using \code{\link{performPCA}}, but will not be 
-compatible with downstream \code{\link{pcaEnrichment}} visualization.
+This function allows users to calculate the principal components for the
+gene set enrichment values. For single-cell data, the PCA will be stored
+with the dimensional reductions. If a matrix is used as input, the output
+is a list for further plotting. Alternatively, users can use functions for
+PCA calculations based on their desired workflow in lieu of using
+\code{\link{performPCA}}, but will not be compatible with downstream
+\code{\link{pcaEnrichment}} visualization.
 }
 \examples{
 gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),

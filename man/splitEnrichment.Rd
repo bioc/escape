@@ -17,40 +17,46 @@ splitEnrichment(
 )
 }
 \arguments{
-\item{input.data}{Output of \code{\link{escape.matrix}} or a single‑cell
+\item{input.data}{Output of \code{\link{escape.matrix}} or a single-cell
 object previously processed by \code{\link{runEscape}}.}
 
-\item{assay}{Name of the assay holding enrichment scores when
-`input.data` is a single‑cell object. Ignored otherwise.}
+\item{assay}{Character. Name of the assay holding enrichment scores when
+\code{input.data} is a single-cell object. Ignored otherwise.}
 
-\item{split.by}{A metadata column used to split or color violins. Must contain 
-at least two levels. If it contains more than two, dodged violins are used.}
+\item{split.by}{Character. Metadata column used to split or color violins.
+Must contain at least two levels. If more than two levels are present,
+dodged violins are used instead of split violins.}
 
-\item{group.by}{Metadata column plotted on the *x*‑axis.  Defaults to the
-Seurat/SCE `ident` slot when `NULL`.}
+\item{group.by}{Character. Metadata column plotted on the x-axis. Defaults
+to the Seurat/SCE \code{ident} slot when \code{NULL}.}
 
-\item{gene.set.use}{Character(1).  Name of the gene set to display.}
+\item{gene.set.use}{Character. Name of the gene set to display.}
 
-\item{order.by}{How to arrange the x‑axis:
-*`"mean"`* – groups ordered by decreasing group mean;
-*`"group"`* – natural sort of group labels;
-*`NULL`* – keep original ordering.}
+\item{order.by}{Character or \code{NULL}. How to arrange the x-axis:
+\itemize{
+  \item \code{"mean"}: Groups ordered by decreasing group mean.
+  \item \code{"group"}: Natural (alphanumeric) sort of group labels.
+  \item \code{NULL} (default): Keep original ordering.
+}}
 
-\item{facet.by}{Optional metadata column used to facet the plot.}
+\item{facet.by}{Character or \code{NULL}. Metadata column used to facet
+the plot.}
 
-\item{scale}{Logical; if `TRUE` scores are centred/scaled (Z‑score) prior
-to plotting.}
+\item{scale}{Logical. If \code{TRUE}, scores are centered and scaled
+(Z-score) prior to plotting. Default is \code{TRUE}.}
 
-\item{palette}{Character. Any palette from \code{\link[grDevices]{hcl.pals}}.}
+\item{palette}{Character. Color palette name from
+\code{\link[grDevices]{hcl.pals}}. Default is \code{"inferno"}.}
 }
 \value{
 A [ggplot2] object.
 }
 \description{
 Visualize the distribution of gene set enrichment scores across groups using
-violin plots. When `split.by` contains exactly two levels, the function draws
-split violins for easy group comparison within each `group.by` category. If
-`split.by` has more than two levels, standard dodged violins are drawn instead.
+violin plots. When \code{split.by} contains exactly two levels, the function
+draws split violins for easy group comparison within each \code{group.by}
+category. If \code{split.by} has more than two levels, standard dodged
+violins are drawn instead.
 }
 \examples{
 gs <- list(Bcells = c("MS4A1", "CD79B", "CD79A", "IGH1", "IGH2"),
