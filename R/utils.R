@@ -206,11 +206,12 @@
 #' @importFrom MatrixGenerics rowSums2
 .cntEval <- function(obj, assay = "RNA", type = "counts") {
   if (.is_seurat(obj)) {
-    # Use generic accessor if available
     if (requireNamespace("SeuratObject", quietly = TRUE)) {
-      # Use layer argument for SeuratObject >= 5.0.0, slot for older versions
       so_version <- utils::packageVersion("SeuratObject")
       if (so_version >= "5.0.0") {
+        # SeuratObject >= 5: always use 'layer' (the 'slot' argument is defunct).
+        # For v3 Assay objects inside a v5 environment, the layer API still
+        # works — it maps legacy slot names transparently.
         cnts <- SeuratObject::GetAssayData(obj, assay = assay, layer = type)
       } else {
         cnts <- SeuratObject::GetAssayData(obj, assay = assay, slot = type)
@@ -251,8 +252,8 @@
 .adding.Enrich <- function(sc, enrichment, name) {
   if (.is_seurat(sc)) {
     if (requireNamespace("SeuratObject", quietly = TRUE)) {
-      major <- as.numeric(substr(sc@version, 1, 1))
-      fn    <- if (major >= 5) {
+      so_version <- utils::packageVersion("SeuratObject")
+      fn <- if (so_version >= "5.0.0") {
         SeuratObject::CreateAssay5Object
       } else {
         SeuratObject::CreateAssayObject
@@ -282,7 +283,12 @@
 .pull.Enrich <- function(sc, name) {
   if (.is_seurat(sc)) {
     if (requireNamespace("Matrix", quietly = TRUE)) {
-      Matrix::t(sc[[name]]["data"])
+      so_version <- utils::packageVersion("SeuratObject")
+      if (so_version >= "5.0.0") {
+        Matrix::t(SeuratObject::GetAssayData(sc, assay = name, layer = "data"))
+      } else {
+        Matrix::t(SeuratObject::GetAssayData(sc, assay = name, slot = "data"))
+      }
     } else {
       stop("Matrix package is required to transpose Seurat assay data.")
     }
