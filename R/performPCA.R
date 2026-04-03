@@ -53,6 +53,10 @@ performPCA <- function(input.data,
   } else {
     stop("`input.data` must be a matrix/data.frame or a Seurat/SCE object.")
   }
+  # Coerce sparse matrices (dgCMatrix from Seurat v5 layer API) to dense
+  if (inherits(mat, "Matrix")) {
+    mat <- as.matrix(mat)
+  }
   if (!is.numeric(mat)) stop("Enrichment matrix must be numeric.")
   
   ## ------------ 2  Choose PCA backend ---------------------------------------
